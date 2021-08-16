@@ -3,7 +3,8 @@
 # docker images
 # docker tag effc482e9bf1 gregclinton/solve
 # docker push gregclinton/solve
-# sudo docker run -v `pwd`:/root -w /root solve julia io.jl
+# docker pull gregclinton/solve
+# sudo docker run -v `pwd`:/root -w /root gregclinton/solve julia io.jl
 
 FROM ubuntu:20.04
 
