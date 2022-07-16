@@ -1,0 +1,45 @@
+<pre id="lst"></pre>
+
+<pre>
+Scorpius
+15:58:51   −26.1   2.9   π
+16:29:24   −26.4   0.9   α
+
+
+</pre>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Scorpius_IAU.svg"/>
+
+<script>
+    // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
+
+    function setLst() {
+        let longitude = -117.6401;
+        let dat = new Date();
+        let floor = Math.floor;
+        let m = dat.getUTCMonth() + 1;
+        let d = dat.getUTCDate();
+        let y = dat.getUTCFullYear();
+        let u = dat.getUTCHours() + dat.getUTCMinutes() / 60 + dat.getUTCSeconds() / 3600;
+
+        if (m <= 2) {
+            m += 12;
+            y--;
+        }
+
+        let jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;		
+        let jd0 = floor(jd);
+        let eph  = (jd0 - 51544.5) / 36525.0;			
+        let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
+        let t = 24.0 * (((gst + longitude / 15.0) / 24.0) % 1);
+        let h = floor(t);
+        let min = floor(60.0 * (t % 1));
+        let s = Math.round(60.0 * (60.0 * (t % 1) - min));
+        let pad = d => (d > 9 ? '' : '0') + d;
+
+        document.getElementById('lst').innerHTML = pad(h) + ':' + pad(min) + ':' + pad(s);
+    }
+
+    setLst();
+    setInterval(setLst, 1000);
+</script>
