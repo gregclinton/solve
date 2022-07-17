@@ -26,18 +26,18 @@ Scorpius
 
     function setLst() {
         let longitude = -117.6401;
-        let dat = new Date();
-        let floor = Math.floor;
-        let m = dat.getUTCMonth() + 1;
-        let d = dat.getUTCDate();
-        let y = dat.getUTCFullYear();
-        let u = dat.getUTCHours() + dat.getUTCMinutes() / 60 + dat.getUTCSeconds() / 3600;
+        let dt = new Date();
+        let y = dt.getUTCFullYear();
+        let m = dt.getUTCMonth() + 1;
+        let d = dt.getUTCDate();
 
         if (m <= 2) {
             m += 12;
             y--;
         }
 
+        let floor = Math.floor;
+        let u = dt.getUTCHours() + dt.getUTCMinutes() / 60 + dt.getUTCSeconds() / 3600;
         let jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;		
         let jd0 = floor(jd);
         let eph  = (jd0 - 51544.5) / 36525.0;			
