@@ -4,7 +4,7 @@
 
 <pre>
 Scorpius
-f 
+g
 
 15:56:53   −29.2   3.8   ρ
 15:58:51   −26.1   2.9   π
@@ -32,6 +32,7 @@ f
  // });
 //if (false)
     DeviceMotionEvent.requestPermission().then(response => {
+        document.getElementById('acl').innerHTML = response;
         if (response == 'granted') {
             document.getElementById('acl').innerHTML = "accelerometer permission granted";
             let acl = new Accelerometer({frequency: 60});
