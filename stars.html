@@ -4,8 +4,7 @@
 
 <pre>
 Scorpius
-eee 
-
+f 
 
 15:56:53   −29.2   3.8   ρ
 15:58:51   −26.1   2.9   π
@@ -34,7 +33,7 @@ eee
 //if (false)
     DeviceMotionEvent.requestPermission().then(response => {
         if (response == 'granted') {
-            console.log("accelerometer permission granted");
+            document.getElementById('acl').innerHTML = "accelerometer permission granted";
             let acl = new Accelerometer({frequency: 60});
 
             acl.addEventListener('reading', () => {
