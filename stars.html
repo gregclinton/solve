@@ -4,7 +4,7 @@
 
 <pre>
 Scorpius
-ddd 
+eee 
 
 
 15:56:53   −29.2   3.8   ρ
@@ -38,7 +38,7 @@ ddd
             let acl = new Accelerometer({frequency: 60});
 
             acl.addEventListener('reading', () => {
-                document.getElementById('acl').innerHTML = result;
+                document.getElementById('acl').innerHTML = result.state;
             });
             acl.start();
         }
