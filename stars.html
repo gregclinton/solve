@@ -1,3 +1,5 @@
+<div id="acl"></div>
+
 <pre id="lst"></pre>
 
 <pre>
@@ -23,13 +25,18 @@ Scorpius
 
 <script>
     // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
+    navigator.permissions.query({name:'geolocation'}).then(function(result) {
+        document.getElementById('acl').innerHTML = result;
+  });
 
     DeviceMotionEvent.requestPermission().then(response => {
         if (response == 'granted') {
             console.log("accelerometer permission granted");
             let acl = new Accelerometer({frequency: 60});
 
-            acl.addEventListener('reading', () => { console.log(acl.x); });
+            acl.addEventListener('reading', () => {
+                document.getElementById('acl').innerHTML = result;
+            });
             acl.start();
         }
     });
