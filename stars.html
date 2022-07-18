@@ -36,8 +36,13 @@ document.getElementById('acl').innerHTML = 'xxx';
 let acl = new Accelerometer({frequency: 60});
 
 acl.addEventListener('reading', () => {
-    document.getElementById('acl').innerHTML = result.state;
+    document.getElementById('acl').innerHTML = 'adfasd';
 });
+
+acl.addEventListener('devicemotion', () => {
+    document.getElementById('acl').innerHTML = 'eqr';
+});
+
 acl.start();
 
 accelerometer.onreading = (e) => {
