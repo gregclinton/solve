@@ -41,6 +41,10 @@ acl.addEventListener('reading', () => {
 });
 acl.start();
 
+accelerometer.onreading = (e) => {
+    document.getElementById('acl').innerHTML = 'abc';
+};
+
 acl.onerror = (event) => {
 
     document.getElementById('acl').innerHTML = event.error.name;
