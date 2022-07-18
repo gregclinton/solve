@@ -24,6 +24,17 @@ Scorpius
 <script>
     // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
 
+    DeviceMotionEvent.requestPermission().then(response => {
+        if (response == 'granted') {
+            console.log("accelerometer permission granted");
+            let acl = new Accelerometer({frequency: 60});
+
+            acl.addEventListener('reading', () => { console.log(acl.x); });
+            acl.start();
+        }
+    });
+
+
     function setLst() {
         let longitude = -117.6401;
         let dt = new Date();
