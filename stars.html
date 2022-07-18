@@ -1,11 +1,7 @@
-<div id="acl"></div>
-
 <pre id="lst"></pre>
 
 <pre>
 Scorpius
-t
-
 15:56:53   −29.2   3.8   ρ
 15:58:51   −26.1   2.9   π
 16:00:20   −22.6   2.3   δ
@@ -27,129 +23,6 @@ t
 
 <script>
     // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
-//    navigator.permissions.query({name:'accelerometer'}).then(function(result) {
-  //      document.getElementById('acl').innerHTML = result.state;
- // });
-
-
-
-
-
-
-
- if ('GravitySensor' in window) {
-  document.getElementById('acl').innerHTML = 'Generic Sensor API';
- }
-  /*
-  let lastReadingTimestamp;
-  let accelerometer = new LinearAccelerationSensor();
-  accelerometer.addEventListener('reading', e => {
-    if (lastReadingTimestamp) {
-      intervalHandler(Math.round(accelerometer.timestamp - lastReadingTimestamp));
-    }
-    lastReadingTimestamp = accelerometer.timestamp
-    accelerationHandler(accelerometer, 'moAccel');
-  });
-  accelerometer.start();
-  
-  if ('GravitySensor' in window) {
-    let gravity = new GravitySensor();
-    gravity.addEventListener('reading', e => accelerationHandler(gravity, 'moAccelGrav'));
-    gravity.start();
-  }
-  
-  let gyroscope = new Gyroscope();
-  gyroscope.addEventListener('reading', e => rotationHandler({
-    alpha: gyroscope.x,
-    beta: gyroscope.y,
-    gamma: gyroscope.z
-  }));
-  gyroscope.start();
-  
-} else if ('DeviceMotionEvent' in window) {
-  document.getElementById('moApi').innerHTML = 'Device Motion API';
-  
-  var onDeviceMotion = function (eventData) {
-    accelerationHandler(eventData.acceleration, 'moAccel');
-    accelerationHandler(eventData.accelerationIncludingGravity, 'moAccelGrav');
-    rotationHandler(eventData.rotationRate);
-    intervalHandler(eventData.interval);
-  }
-  
-  window.addEventListener('devicemotion', onDeviceMotion, false);
-} else {
-  document.getElementById('acl').innerHTML = 'No Accelerometer & Gyroscope API available';
-}
-
-function accelerationHandler(acceleration, targetId) {
-  var info, xyz = "[X, Y, Z]";
-
-  info = xyz.replace("X", acceleration.x && acceleration.x.toFixed(3));
-  info = info.replace("Y", acceleration.y && acceleration.y.toFixed(3));
-  info = info.replace("Z", acceleration.z && acceleration.z.toFixed(3));
-  document.getElementById('acl').innerHTML = info;
-}
-
-function rotationHandler(rotation) {
-  var info, xyz = "[X, Y, Z]";
-
-  info = xyz.replace("X", rotation.alpha && rotation.alpha.toFixed(3));
-  info = info.replace("Y", rotation.beta && rotation.beta.toFixed(3));
-  info = info.replace("Z", rotation.gamma && rotation.gamma.toFixed(3));
-  document.getElementById("acl").innerHTML = info;
-}
-
-function intervalHandler(interval) {
-  document.getElementById("acl").innerHTML = interval;
-}
-*/
-
-
-
-
-
-
-
-
-
-/*
-
-document.getElementById('acl').innerHTML = 'xxx';
-
-let acl = new Accelerometer({frequency: 60});
-
-acl.addEventListener('reading', () => {
-    document.getElementById('acl').innerHTML = 'adfasd';
-});
-
-acl.addEventListener('devicemotion', () => {
-    document.getElementById('acl').innerHTML = 'eqr';
-});
-
-acl.start();
-
-accelerometer.onreading = (e) => {
-    document.getElementById('acl').innerHTML = 'abc';
-};
-
-acl.onerror = (event) => {
-
-    document.getElementById('acl').innerHTML = event.error.name;
-  };
-
-    DeviceMotionEvent.requestPermission().then(response => {
-        document.getElementById('acl').innerHTML = response;
-        if (response == 'granted') {
-            document.getElementById('acl').innerHTML = "accelerometer permission granted";
-            let acl = new Accelerometer({frequency: 60});
-
-            acl.addEventListener('reading', () => {
-                document.getElementById('acl').innerHTML = result.state;
-            });
-            acl.start();
-        }
-    });
-*/
 
     function setLst() {
         let longitude = -117.6401;
