@@ -49,9 +49,9 @@ Scorpius
         let s = Math.round(60.0 * (60.0 * (t % 1) - min));
         let pad = d => (d > 9 ? '' : '0') + d;
 
-        document.getElementById('lst').innerHTML = pad(h) + ':' + pad(min) + ':' + pad(s);
+//        document.getElementById('lst').innerHTML = pad(h) + ':' + pad(min) + ':' + pad(s);
 
-        document.getElementById('lst').innerHTML = 'a';
+//        document.getElementById('lst').innerHTML = 'a';
 
         window.addEventListener('deviceorientation', (e) => {
             document.getElementById('lst').innerHTML = 'alha:' + e.alpha;
