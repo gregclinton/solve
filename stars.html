@@ -375,11 +375,10 @@
                 if (y > 0 && y < height) {
                     const label = document.getElementById(name + '-label-' + y);
 
-                    label.setAttributeNS(null, 'x', x);
+                    label.setAttributeNS(null, 'x', x + 4);
                 }
             }
         }
-
     }
 
     function drawMeridian(name) {
@@ -403,11 +402,13 @@
                     let label = document.createElementNS(svgns, 'text');
                     let text = document.createTextNode('' + dec);
 
-                    label.setAttributeNS(null, 'style', 'color:gray');
+                    label.setAttributeNS(null, 'fill', '#444');
                     label.appendChild(text);                    
                     label.setAttribute('id', name + '-label-' + y);
                     label.setAttributeNS(null, 'x', 0);
                     label.setAttributeNS(null, 'y', y);
+                    label.setAttributeNS(null, 'font-family', 'Arial, Helvetica, sans-serif');
+                    label.setAttributeNS(null, 'font-size', 9);
                     svg.appendChild(label);
                 }
             }
@@ -450,7 +451,7 @@
                 line.setAttributeNS(null, 'x2', width);
                 line.setAttributeNS(null, 'y1', y);
                 line.setAttributeNS(null, 'y2', y);
-                line.setAttributeNS(null, 'stroke', '#222');
+                line.setAttributeNS(null, 'stroke', dec % 5 === 0 ? '#444' : '#222');
                 line.setAttributeNS(null, 'stroke-width', 0.8);
                 svg.appendChild(line);
             }
