@@ -38,10 +38,10 @@
             hip.hpmag < 7
     */
 
-    let meridian = 200;
+    let meridian = 240;
 
     function lst() {
-        meridian += 10;
+        meridian += 1;
         return meridian;
     
         let longitude = -117.6401;
@@ -336,19 +336,6 @@
 
     const svgns = "http://www.w3.org/2000/svg";
 
-    function moveMeridian(name) {
-        const svg = document.getElementById(name);
-
-        height = svg.getAttribute('height');
-        width = svg.getAttribute('width');
-
-        const line = document.getElementById(name + '-meridian');
-        const x = lst(); scaleRa(lst());
-
-        line.setAttribute('x1', x);
-        line.setAttribute('x2', x);
-    }
-
     function getStars(csv) {
         stars = [];
         raMin = 360;
@@ -369,6 +356,32 @@
         }
     }
 
+    function moveMeridian(name) {
+        const svg = document.getElementById(name);
+
+        height = svg.getAttribute('height');
+        width = svg.getAttribute('width');
+
+        const line = document.getElementById(name + '-meridian');
+        const x = scaleRa(lst());
+
+        line.setAttribute('x1', x);
+        line.setAttribute('x2', x);
+
+        for (let dec = -90; dec < 90; dec++) {
+            if (dec % 5 === 0) {
+                let y = scaleDec(dec);
+
+                if (y > 0 && y < height) {
+                    const label = document.getElementById(name + '-label-' + y);
+
+                    label.setAttributeNS(null, 'x', x);
+                }
+            }
+        }
+
+    }
+
     function drawMeridian(name) {
         const svg = document.getElementById(name);
         let line = document.createElementNS(svgns, 'line');
@@ -381,6 +394,24 @@
         line.setAttributeNS(null, 'stroke-width', 0.8);
         line.setAttribute('id', name + '-meridian');
         svg.appendChild(line);
+
+        for (let dec = -90; dec < 90; dec++) {
+            if (dec % 5 === 0) {
+                let y = scaleDec(dec);
+
+                if (y > 0 && y < height) {
+                    let label = document.createElementNS(svgns, 'text');
+                    let text = document.createTextNode('' + dec);
+
+                    label.setAttributeNS(null, 'style', 'color:gray');
+                    label.appendChild(text);                    
+                    label.setAttribute('id', name + '-label-' + y);
+                    label.setAttributeNS(null, 'x', 0);
+                    label.setAttributeNS(null, 'y', y);
+                    svg.appendChild(label);
+                }
+            }
+        }
 
         moveMeridian(name);
     }
