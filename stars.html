@@ -215,7 +215,7 @@
         line.setAttributeNS(null, 'x2', 0);
         line.setAttributeNS(null, 'y1', 0);
         line.setAttributeNS(null, 'y2', height);
-        line.setAttributeNS(null, 'stroke', '#666');
+        line.setAttributeNS(null, 'stroke', '#555');
         line.setAttributeNS(null, 'stroke-width', 0.8);
         line.setAttribute('id', name + '-meridian');
         svg.appendChild(line);
@@ -289,8 +289,8 @@
 
             dot.setAttributeNS(null, 'cx', scaleRa(ra));
             dot.setAttributeNS(null, 'cy', scaleDec(dec));
-            dot.setAttributeNS(null, 'r', mag < 3 ? 2 : 1);
-            dot.setAttributeNS(null, 'style', 'fill: brown; stroke: none;' );
+            dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
+            dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
             svg.appendChild(dot);
         }
     }
