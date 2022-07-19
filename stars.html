@@ -190,6 +190,23 @@
         254.93469985,-18.24799544,6.7499
     `;
 
+    function drawMeridian(name) {
+        const x = 100;//scaleRa(lst());
+        const svgns = "http://www.w3.org/2000/svg";
+        const svg = document.getElementById(name);
+        const height = svg.getAttribute('height');
+
+        let line = document.createElementNS(svgns, 'line');
+
+        line.setAttributeNS(null, 'x1', x);
+        line.setAttributeNS(null, 'x2', x);
+        line.setAttributeNS(null, 'y1', 0);
+        line.setAttributeNS(null, 'y2', height);
+        line.setAttributeNS(null, 'stroke', '#666');
+        line.setAttributeNS(null, 'stroke-width', 0.8);
+        svg.appendChild(line);
+    }
+
     function drawStars(name, csv) {
         let stars = [];
         let raMin = 360;
@@ -228,6 +245,7 @@
                 line.setAttributeNS(null, 'y1', 0);
                 line.setAttributeNS(null, 'y2', height);
                 line.setAttributeNS(null, 'stroke', '#222');
+                line.setAttributeNS(null, 'stroke-width', 0.8);
                 svg.appendChild(line);
             }
         }
@@ -243,9 +261,12 @@
                 line.setAttributeNS(null, 'y1', y);
                 line.setAttributeNS(null, 'y2', y);
                 line.setAttributeNS(null, 'stroke', '#222');
+                line.setAttributeNS(null, 'stroke-width', 0.8);
                 svg.appendChild(line);
             }
         }
+
+        drawMeridian(name);
 
         for (const star of stars) {
             let [ra, dec, mag] = star;
@@ -259,10 +280,9 @@
         }
     }
 
-    function drawAll() {
-        drawStars('scorpius', scorpius);
-    }
+    drawStars('scorpius', scorpius);
 
-    drawAll();
-    // setInterval(drawAll, 10000);
+    setInterval(() => {
+        drawMeridian('scorpius');
+    }, 10000);
 </script>
