@@ -24,6 +24,11 @@ Scorpius
 <script>
     // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
 
+    window.addEventListener('deviceorientation', (e) => {
+            document.getElementById('lst').innerHTML = 'alha:' + e.alpha;
+        });
+
+
     function setLst() {
         let longitude = -117.6401;
         let dt = new Date();
@@ -52,10 +57,6 @@ Scorpius
 //        document.getElementById('lst').innerHTML = pad(h) + ':' + pad(min) + ':' + pad(s);
 
 //        document.getElementById('lst').innerHTML = 'a';
-
-        window.addEventListener('deviceorientation', (e) => {
-            document.getElementById('lst').innerHTML = 'alha:' + e.alpha;
-        });
     }
 
     setLst();
