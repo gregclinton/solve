@@ -9,6 +9,14 @@
 
 
 
+
+
+
+
+
+
+
+
 </pre>
 
 <img
@@ -209,6 +217,36 @@
         const scaleRa = ra => scale(ra, raMin, raMax, width);
         const scaleDec = dec => scale(dec, decMin, decMax, height);
 
+        for (let minute = 0; minute < 1440; minute++) {
+            let x = scaleRa(minute * 360 / 1440);
+
+            if (x > 0 && x < width) {
+                let line = document.createElementNS(svgns, 'line');
+
+                line.setAttributeNS(null, 'x1', x);
+                line.setAttributeNS(null, 'x2', x);
+                line.setAttributeNS(null, 'y1', 0);
+                line.setAttributeNS(null, 'y2', height);
+                line.setAttributeNS(null, 'stroke', '#222');
+                svg.appendChild(line);
+            }
+        }
+
+        for (let dec = -90; dec < 90; dec++) {
+            let y = scaleDec(dec);
+
+            if (y > 0 && y < height) {
+                let line = document.createElementNS(svgns, 'line');
+
+                line.setAttributeNS(null, 'x1', 0);
+                line.setAttributeNS(null, 'x2', width);
+                line.setAttributeNS(null, 'y1', y);
+                line.setAttributeNS(null, 'y2', y);
+                line.setAttributeNS(null, 'stroke', '#222');
+                svg.appendChild(line);
+            }
+        }
+
         for (const star of stars) {
             let [ra, dec, mag] = star;
             let dot = document.createElementNS(svgns, 'circle');
@@ -226,5 +264,5 @@
     }
 
     drawAll();
-    setInterval(drawAll, 10000);
+    // setInterval(drawAll, 10000);
 </script>
