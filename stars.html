@@ -1,7 +1,7 @@
 <body style="background-color:black;color:brown">
 
 <div>
-    <svg id="scorpius" height="2000" width="3000"></svg>
+    <svg id="scorpius" height="500" width="800"></svg>
 </div>
 
 <pre>
@@ -184,10 +184,10 @@
 
     function drawStars(name, csv) {
         let stars = [];
-        let raMin = 0;
-        let raMax = 360;
-        let decMin = -90;
-        let decMax = 90;
+        let raMin = 360;
+        let raMax = 0;
+        let decMin = 90;
+        let decMax = -90;
 
         for (const row of csv.trim().split('\n')) {
             const star = row.trim().split(',');
@@ -205,14 +205,9 @@
         const svg = document.getElementById(name);
         const height = svg.getAttribute('height');
         const width = svg.getAttribute('width');
-
-        let scaleRa = (ra) => {
-            return width - ((ra - raMin) * (width / (raMax - raMin)));
-        };
-
-        let scaleDec = (dec) => {
-            return height - ((dec - decMin) * (height / (decMax - decMin)));
-        };
+        const scale = (x, xmin, xmax, size) => size - ((x - xmin) * (size / (xmax - xmin)));
+        const scaleRa = ra => scale(ra, raMin, raMax, width);
+        const scaleDec = dec => scale(dec, decMin, decMax, height);
 
         for (const star of stars) {
             let [ra, dec, mag] = star;
