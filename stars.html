@@ -320,22 +320,57 @@
         243.9645463,-14.84911862,6.1274
         245.11766582,-12.91111502,6.6468
         243.46211879,-11.83772219,5.3868
-`;
+    `;
+
+    let stars = [];
+    let raMin = 0;
+    let raMax = 0;
+    let decMin = 0;
+    let decMax = 0;
+    let width = 0;
+    let height = 0;
+
+    const scale = (x, xmin, xmax, size) => size - ((x - xmin) * (size / (xmax - xmin)));
+    const scaleRa = ra => scale(ra, raMin, raMax, width);
+    const scaleDec = dec => scale(dec, decMin, decMax, height);
 
     const svgns = "http://www.w3.org/2000/svg";
 
     function moveMeridian(name) {
+        const svg = document.getElementById(name);
+
+        height = svg.getAttribute('height');
+        width = svg.getAttribute('width');
+
         const line = document.getElementById(name + '-meridian');
-        const x = lst(); //scaleRa(lst());
+        const x = lst(); scaleRa(lst());
 
         line.setAttribute('x1', x);
         line.setAttribute('x2', x);
     }
 
+    function getStars(csv) {
+        stars = [];
+        raMin = 360;
+        raMax = 0;
+        decMin = 90;
+        decMax = -90;
+
+        for (const row of csv.trim().split('\n')) {
+            const star = row.trim().split(',');
+            const [ra, dec, mag, name] = star;
+
+            raMin = Math.min(ra, raMin);
+            raMax = Math.max(ra, raMax);
+            decMin = Math.min(dec, decMin);
+            decMax = Math.max(dec, decMax);
+
+            stars.push(star);
+        }
+    }
+
     function drawMeridian(name) {
         const svg = document.getElementById(name);
-        const height = svg.getAttribute('height');
-
         let line = document.createElementNS(svgns, 'line');
 
         line.setAttributeNS(null, 'x1', 0);
@@ -351,30 +386,12 @@
     }
 
     function drawStars(name, csv) {
-        let stars = [];
-        let raMin = 360;
-        let raMax = 0;
-        let decMin = 90;
-        let decMax = -90;
-
-        for (const row of csv.trim().split('\n')) {
-            const star = row.trim().split(',');
-            const [ra, dec, mag, name] = star;
-
-            raMin = Math.min(ra, raMin);
-            raMax = Math.max(ra, raMax);
-            decMin = Math.min(dec, decMin);
-            decMax = Math.max(dec, decMax);
-
-            stars.push(star);
-        }
-
         const svg = document.getElementById(name);
-        const height = svg.getAttribute('height');
-        const width = svg.getAttribute('width');
-        const scale = (x, xmin, xmax, size) => size - ((x - xmin) * (size / (xmax - xmin)));
-        const scaleRa = ra => scale(ra, raMin, raMax, width);
-        const scaleDec = dec => scale(dec, decMin, decMax, height);
+
+        height = svg.getAttribute('height');
+        width = svg.getAttribute('width');
+
+        getStars(csv);
 
         for (let minute = 0; minute < 1440; minute++) {
             let x = scaleRa(minute * 360 / 1440);
@@ -425,6 +442,7 @@
     drawStars('scorpius', scorpius);
 
     setInterval(() => {
+        getStars(scorpius);
         moveMeridian('scorpius');
     }, 10000);
 </script>
