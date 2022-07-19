@@ -1,7 +1,7 @@
 <body style="background-color:black;color:brown">
 
 <div>
-    <svg id="scorpius" height="500" width="300"></svg>
+    <svg id="scorpius" height="700" width="500"></svg>
 </div>
 
 <pre>
@@ -43,7 +43,7 @@
     function lst() {
         meridian += 1;
         return meridian;
-    
+
         let longitude = -117.6401;
         let dt = new Date();
         let y = dt.getUTCFullYear();
@@ -403,7 +403,7 @@
                     let text = document.createTextNode('' + dec);
 
                     label.setAttributeNS(null, 'fill', '#444');
-                    label.appendChild(text);                    
+                    label.appendChild(text);
                     label.setAttribute('id', name + '-label-' + y);
                     label.setAttributeNS(null, 'x', 0);
                     label.setAttributeNS(null, 'y', y - 2);
@@ -460,14 +460,29 @@
         drawMeridian(name);
 
         for (const star of stars) {
-            let [ra, dec, mag] = star;
+            let [ra, dec, mag, name] = star;
             let dot = document.createElementNS(svgns, 'circle');
+            let x = scaleRa(ra);
+            let y = scaleDec(dec);
 
-            dot.setAttributeNS(null, 'cx', scaleRa(ra));
-            dot.setAttributeNS(null, 'cy', scaleDec(dec));
+            dot.setAttributeNS(null, 'cx', x);
+            dot.setAttributeNS(null, 'cy', y);
             dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
             dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
             svg.appendChild(dot);
+
+            if (name) {
+                let label = document.createElementNS(svgns, 'text');
+                let text = document.createTextNode(name);
+
+                label.setAttributeNS(null, 'fill', '#444');
+                label.appendChild(text);
+                label.setAttributeNS(null, 'x', x - 4);
+                label.setAttributeNS(null, 'y', y - 2);
+                label.setAttributeNS(null, 'font-family', 'Arial, Helvetica, sans-serif');
+                label.setAttributeNS(null, 'font-size', 9);
+                svg.appendChild(label);
+            }
         }
     }
 
