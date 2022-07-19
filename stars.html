@@ -42,7 +42,12 @@
             hip.hpmag < 7
     */
 
+    let meridian = 200;
+
     function lst() {
+        meridian += 10;
+        return meridian;
+    
         let longitude = -117.6401;
         let dt = new Date();
         let y = dt.getUTCFullYear();
@@ -190,21 +195,32 @@
         254.93469985,-18.24799544,6.7499
     `;
 
+    const svgns = "http://www.w3.org/2000/svg";
+
+    function moveMeridian(name) {
+        const line = document.getElementById(name + '-meridian');
+        const x = lst(); //scaleRa(lst());
+
+        line.setAttribute('x1', x);
+        line.setAttribute('x2', x);
+    }
+
     function drawMeridian(name) {
-        const x = 100;//scaleRa(lst());
-        const svgns = "http://www.w3.org/2000/svg";
         const svg = document.getElementById(name);
         const height = svg.getAttribute('height');
 
         let line = document.createElementNS(svgns, 'line');
 
-        line.setAttributeNS(null, 'x1', x);
-        line.setAttributeNS(null, 'x2', x);
+        line.setAttributeNS(null, 'x1', 0);
+        line.setAttributeNS(null, 'x2', 0);
         line.setAttributeNS(null, 'y1', 0);
         line.setAttributeNS(null, 'y2', height);
         line.setAttributeNS(null, 'stroke', '#666');
         line.setAttributeNS(null, 'stroke-width', 0.8);
+        line.setAttribute('id', name + '-meridian');
         svg.appendChild(line);
+
+        moveMeridian(name);
     }
 
     function drawStars(name, csv) {
@@ -226,7 +242,6 @@
             stars.push(star);
         }
 
-        const svgns = "http://www.w3.org/2000/svg";
         const svg = document.getElementById(name);
         const height = svg.getAttribute('height');
         const width = svg.getAttribute('width');
@@ -283,6 +298,6 @@
     drawStars('scorpius', scorpius);
 
     setInterval(() => {
-        drawMeridian('scorpius');
+        moveMeridian('scorpius');
     }, 10000);
 </script>
