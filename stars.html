@@ -51,6 +51,8 @@ Scorpius
 
         document.getElementById('lst').innerHTML = pad(h) + ':' + pad(min) + ':' + pad(s);
 
+        document.getElementById('lst').innerHTML = 'a';
+
         window.addEventListener('deviceorientation', (e) => {
             document.getElementById('lst').innerHTML = 'alha:' + e.alpha;
         });
