@@ -50,6 +50,10 @@ Scorpius
         let pad = d => (d > 9 ? '' : '0') + d;
 
         document.getElementById('lst').innerHTML = pad(h) + ':' + pad(min) + ':' + pad(s);
+
+        window.addEventListener('deviceorientation', (e) => {
+            document.getElementById('lst').innerHTML = 'alha:' + e.alpha;
+        });
     }
 
     setLst();
