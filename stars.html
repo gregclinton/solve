@@ -1,6 +1,8 @@
 <body style="background-color:black;color:brown">
 
-<div id="scorpius"></div>
+<div>
+    <svg id="scorpius" height="200" width="300"></svg>
+</div>
 
 <pre>
 
@@ -13,7 +15,7 @@
     src="https://upload.wikimedia.org/wikipedia/commons/3/38/Scorpius_IAU.svg"/
     style="background-color: gray"
 >
-</body>>
+</body>
 
 <script>
     /*
@@ -55,7 +57,8 @@
         return gst + longitude / 15;
     }
 
-    let scorpius = `239.41862315,-20.98302564,5.8531
+    let scorpius = `
+        239.41862315,-20.98302564,5.8531
         238.33358671,-20.16699405,5.0287
         238.75154369,-19.38288098,5.9524
         241.35931206,-19.80539286,2.594
@@ -176,17 +179,23 @@
         250.32772316,-18.05937859,6.738
         251.37573793,-19.13692789,6.689
         254.26663364,-19.53983923,6.3092
-        254.93469985,-18.24799544,6.7499`.split('\n');
+        254.93469985,-18.24799544,6.7499
+    `;
 
     function drawStars(name, csv) {
-        let element = document.getElementById(name);
+        const svgns = "http://www.w3.org/2000/svg";
+        const svg = document.getElementById(name);
 
-        for (const row of csv) {
-            let [ra, dec, mag] = row.split(',');
+        for (const row of csv.trim().split('\n')) {
+            let [ra, dec, mag] = row.trim().split(',');
+            let star = document.createElementNS(svgns, 'circle');
+
+            star.setAttributeNS(null, 'cx', ra);
+            star.setAttributeNS(null, 'cy', -dec * 10);
+            star.setAttributeNS(null, 'r', 1);
+            star.setAttributeNS(null, 'style', 'fill: red; stroke: none;' );
+            svg.appendChild(star);
         }
-
-        element.innerHTML = name + ': ' + csv.length;
-
     }
 
     function drawAll() {
