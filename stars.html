@@ -183,18 +183,46 @@
     `;
 
     function drawStars(name, csv) {
-        const svgns = "http://www.w3.org/2000/svg";
-        const svg = document.getElementById(name);
+        let stars = [];
+        let raMin = 0;
+        let raMax = 360;
+        let decMin = -90;
+        let decMax = 90;
 
         for (const row of csv.trim().split('\n')) {
-            let [ra, dec, mag] = row.trim().split(',');
-            let star = document.createElementNS(svgns, 'circle');
+            const star = row.trim().split(',');
+            const [ra, dec, mag] = star;
 
-            star.setAttributeNS(null, 'cx', ra);
-            star.setAttributeNS(null, 'cy', -dec * 10);
-            star.setAttributeNS(null, 'r', 1);
-            star.setAttributeNS(null, 'style', 'fill: red; stroke: none;' );
-            svg.appendChild(star);
+            raMin = Math.min(ra, raMin);
+            raMax = Math.max(ra, raMax);
+            decMin = Math.min(dec, decMin);
+            decMax = Math.max(dec, decMax);
+
+            stars.push(star);
+        }
+
+        const svgns = "http://www.w3.org/2000/svg";
+        const svg = document.getElementById(name);
+        const height = svg.getAttribute('height');
+        const width = svg.getAttribute('width');
+
+        let scaleRa = (ra) => {
+            return ra;
+        };
+
+        let scaleDec = (dec) => {
+            return -dec * 10;
+        };
+
+        for (const star of stars) {
+            let [ra, dec, mag] = star;
+            let dot = document.createElementNS(svgns, 'circle');
+
+            dot.setAttributeNS(null, 'cx', scaleRa(ra));
+            dot.setAttributeNS(null, 'cy', scaleDec(dec));
+            dot.setAttributeNS(null, 'r', mag < 3 ? 2 : 1);
+            dot.setAttributeNS(null, 'style', 'fill: brown; stroke: none;' );
+            svg.appendChild(dot);
         }
     }
 
