@@ -142,7 +142,10 @@
                     this.svg.appendChild(this.incline);
 
                     window.addEventListener('deviceorientation', e => {
-                        this.incline.setAttribute('transform', 'translate(0 ' + this.scaleDec(e.beta - (90 - longitude)) + ')');
+                        let dec = e.beta - (90 - longitude);
+
+                        document.getElementById('incline').innerHTML = '' + dec;
+                        this.incline.setAttribute('transform', 'translate(0 ' + this.scaleDec(dec) + ')');
                     });
 
                     clearInterval(interval);
