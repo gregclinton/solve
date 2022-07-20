@@ -11,7 +11,8 @@
 </body>
 
 <script>
-    deviceEnabled = false;
+    const longitude = -117.6401;
+    let deviceEnabled = false;
 
     function enableDevice() {
         DeviceOrientationEvent.requestPermission().then(() => {
@@ -141,7 +142,7 @@
                     this.svg.appendChild(this.incline);
 
                     window.addEventListener('deviceorientation', e => {
-                        this.incline.setAttribute('transform', 'translate(0 ' + this.scaleDec(e.beta - 56.34) + ')');
+                        this.incline.setAttribute('transform', 'translate(0 ' + this.scaleDec(e.beta - (90 - longitude)) + ')');
                     });
 
                     clearInterval(interval);
@@ -165,7 +166,6 @@
         moveMeridian() {
             // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
 
-            let longitude = -117.6401;
             let dt = new Date();
             let y = dt.getUTCFullYear();
             let m = dt.getUTCMonth() + 1;
