@@ -1,4 +1,8 @@
-<body style="background-color:black;color:brown">
+<body style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;">
+
+<div id="device">
+    device
+</div>
 
 <div>
     <svg id="scorpius" height="700" width="500"></svg>
@@ -355,7 +359,7 @@
         let jd0 = floor(jd);
         let eph  = (jd0 - 51544.5) / 36525.0;
         let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
-        const x = scaleRa((gst * 15 + longitude) % 360);
+        const x = scaleRa(240);//(gst * 15 + longitude) % 360);
 
         line.setAttribute('x1', x);
         line.setAttribute('x2', x);
@@ -371,34 +375,6 @@
                 }
             }
         }
-    }
-
-    function drawMeridian(name) {
-        const svg = document.getElementById(name);
-
-        line(svg, name + '-meridian', 0, 0, 0, height, '#555');
-
-        for (let dec = -90; dec < 90; dec++) {
-            if (dec % 5 === 0) {
-                let y = scaleDec(dec);
-
-                if (y > 0 && y < height) {
-                    let label = document.createElementNS(svgns, 'text');
-                    let text = document.createTextNode('' + dec);
-
-                    label.setAttributeNS(null, 'fill', '#444');
-                    label.appendChild(text);
-                    label.setAttribute('id', name + '-label-' + y);
-                    label.setAttributeNS(null, 'x', 0);
-                    label.setAttributeNS(null, 'y', y - 2);
-                    label.setAttributeNS(null, 'font-family', 'Arial, Helvetica, sans-serif');
-                    label.setAttributeNS(null, 'font-size', 9);
-                    svg.appendChild(label);
-                }
-            }
-        }
-
-        moveMeridian(name);
     }
 
     function drawStars(name, csv) {
@@ -425,7 +401,29 @@
             }
         }
 
-        drawMeridian(name);
+        // draw meridian
+        line(svg, name + '-meridian', 0, 0, 0, height, '#555');
+
+        for (let dec = -90; dec < 90; dec++) {
+            if (dec % 5 === 0) {
+                let y = scaleDec(dec);
+
+                if (y > 0 && y < height) {
+                    let label = document.createElementNS(svgns, 'text');
+                    let text = document.createTextNode('' + dec);
+
+                    label.setAttributeNS(null, 'fill', '#444');
+                    label.appendChild(text);
+                    label.setAttribute('id', name + '-label-' + y);
+                    label.setAttributeNS(null, 'x', 0);
+                    label.setAttributeNS(null, 'y', y - 2);
+                    label.setAttributeNS(null, 'font-size', 'xx-small');
+                    svg.appendChild(label);
+                }
+            }
+        }
+
+        moveMeridian(name);
 
         for (const star of stars) {
             let [ra, dec, mag, name] = star;
@@ -447,8 +445,7 @@
                 label.appendChild(text);
                 label.setAttributeNS(null, 'x', x - 4);
                 label.setAttributeNS(null, 'y', y - 2);
-                label.setAttributeNS(null, 'font-family', 'Arial, Helvetica, sans-serif');
-                label.setAttributeNS(null, 'font-size', 9);
+                label.setAttributeNS(null, 'font-size', 'xx-small');
                 svg.appendChild(label);
             }
         }
@@ -457,6 +454,10 @@
     drawStars('scorpius', scorpius);
 
     if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
+        const device = document.getElementById('device');
+
+        device.innerHTML = 'found device';
+
         DeviceOrientationEvent.requestPermission().then(() => {
             window.addEventListener('deviceorientation', e => {
                 line(document.getElementById('scorpius'), false, 0, e.gamma, svg.getAttribute('width'), y, 'blue');
