@@ -1,6 +1,6 @@
 <body style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;">
 
-<div id="device">
+<div id="x device">
     device
 </div>
 
@@ -333,6 +333,8 @@
     }
 
     function moveMeridian(name) {
+        // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
+
         let longitude = -117.6401;
         let dt = new Date();
         let y = dt.getUTCFullYear();
@@ -344,8 +346,6 @@
             y--;
         }
 
-        // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
-
         let floor = Math.floor;
         let u = dt.getUTCHours() + dt.getUTCMinutes() / 60 + dt.getUTCSeconds() / 3600;
         let jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;
@@ -353,9 +353,8 @@
         let eph  = (jd0 - 51544.5) / 36525.0;
         let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
 
-        const svg = document.getElementById(name);
-        width = svg.getAttribute('width');
-        const x = scaleRa(240);//(gst * 15 + longitude) % 360);
+        width = document.getElementById(name).getAttribute('width');
+        const x = scaleRa((gst * 15 + longitude) % 360);
 
         document.getElementById(name + '-meridian').setAttribute('transform', 'translate(' + x + ' 0)');
     }
@@ -443,10 +442,13 @@
     if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
         const device = document.getElementById('device');
 
-        device.innerHTML = 'found device';
+        device.innerHTML = 'x found device';
 
         DeviceOrientationEvent.requestPermission().then(() => {
+            device.innerHTML = 'got permission';
+
             window.addEventListener('deviceorientation', e => {
+                device.innerHTML = 'gamma: ' + e.gamma;
                 line(document.getElementById('scorpius'), false, 0, e.gamma, svg.getAttribute('width'), y, 'blue');
             });
         });
