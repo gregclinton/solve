@@ -152,7 +152,6 @@
                     this.svg.appendChild(this.inclineNorth);
 
                     window.addEventListener('deviceorientation', e => {
-                        document.getElementById('incline').innerHTML = '' + (e.beta - (90 - latitude));
                         let set = (e, dec) => e.setAttribute('transform', 'translate(0 ' + this.scaleDec(dec) + ')');
 
                         set(this.inclineSouth, e.beta - (90 - latitude));
