@@ -24,18 +24,7 @@ function line(e, x1, y1, x2, y2, color) {
     line.setAttributeNS(null, 'stroke', color);
     line.setAttributeNS(null, 'stroke-width', 0.2);
     e.appendChild(line);
-}
-
-function label(e, x, y, caption) {
-    let label = document.createElementNS(svgns, 'text');
-    let text = document.createTextNode(caption);
-
-    label.setAttributeNS(null, 'fill', '#444');
-    label.appendChild(text);
-    label.setAttributeNS(null, 'x', x);
-    label.setAttributeNS(null, 'y', y);
-    label.setAttributeNS(null, 'font-size', 6);
-    e.appendChild(label);
+    return e;
 }
 
 class Scaler {
@@ -94,23 +83,7 @@ class StarMap {
         }
 
         // draw meridian
-        let g = document.createElementNS(svgns, 'g');
-
-        this.svg.appendChild(g);
-
-        line(g, 0, 0, 0, height, '#555');
-
-        for (let dec = -90; dec < 90; dec++) {
-            if (dec % 5 === 0) {
-                let y = this.decScaler.scale(dec);
-
-                if (y > 0 && y < height) {
-                    label(g, 3, y - 3, '' + dec);
-                }
-            }
-        }
-
-        this.meridian = g;
+        this.meridian = line(svg, 0, 0, 0, height, '#555');
         this.moveMeridian();
 
         // draw stars
@@ -127,7 +100,15 @@ class StarMap {
             this.svg.appendChild(dot);
 
             if (name) {
-                label(this.svg, x - 4, y - 2, name);
+                let label = document.createElementNS(svgns, 'text');
+                let text = document.createTextNode(name);
+            
+                label.setAttributeNS(null, 'fill', '#444');
+                label.appendChild(text);
+                label.setAttributeNS(null, 'x', x - 4);
+                label.setAttributeNS(null, 'y', y - 2);
+                label.setAttributeNS(null, 'font-size', 6);
+                svg.appendChild(label);
             }
         }
 
@@ -183,6 +164,7 @@ class StarMap {
         let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
         let x = this.raScaler.scale((gst * 15 + longitude) % 360);
 
-        this.meridian.setAttribute('transform', 'translate(' + x + ' 0)');
+        this.meridian.setAttribute('x1', x);
+        this.meridian.setAttribute('x2', x);
     }
 }
