@@ -72,7 +72,6 @@ class StarMap {
 
             this.raScaler.scan(ra);
             this.decScaler.scan(dec);
-
             this.stars.push(star);
         }
 
