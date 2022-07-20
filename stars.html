@@ -21,6 +21,12 @@
 
 //    let meridian = 240;
 
+    let inclination = 0;
+
+    window.addEventListener('deviceorientation', e => {
+        inclination = e.gamma;
+    });
+
     function lst() {
 //        return meridian++;
         let longitude = -117.6401;
@@ -446,7 +452,7 @@
             let x = scaleRa(ra);
             let y = scaleDec(dec);
 
-            dot.setAttributeNS(null, 'cx', x);
+            dot.setAttributeNS(null, 'cx', x + inclination);
             dot.setAttributeNS(null, 'cy', y);
             dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
             dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
