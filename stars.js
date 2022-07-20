@@ -151,7 +151,7 @@ class StarMap {
                 this.svg.appendChild(this.inclineNorth);
 
                 window.addEventListener('deviceorientation', e => {
-                    let set = (e, dec) => e.setAttribute('transform', 'translate(0 ' + this.scaleDec(dec) + ')');
+                    let set = (e, dec) => e.setAttribute('transform', 'translate(0 ' + this.decScaler.scale(dec) + ')');
 
                     set(this.inclineSouth, e.beta - (90 - latitude));
                     set(this.inclineNorth, 90 - Math.abs(e.beta - latitude));
