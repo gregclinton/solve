@@ -38,25 +38,40 @@ function label(e, x, y, caption) {
     e.appendChild(label);
 }
 
+class Scaler {
+    constructor(size) {
+        this.low = Number.MAX_VALUE;
+        this.high = Number.MIN_VALUE;
+        this.size = size;
+    }
+
+    scale(x) {
+        return this.size - ((x - this.low) * this.size / (this.high - this.low));
+    }
+
+    scan(x) {
+        this.low = Math.min(x, this.low);
+        this.high = Math.max(x, this.high);
+    }
+}
+
 class StarMap {
     constructor(csv, svg) {
         this.stars = [];
-        this.raMin = 360;
-        this.raMax = 0;
-        this.decMin = 90;
-        this.decMax = -90;
         this.svg = svg;
-        this.height = svg.getAttribute('height');
-        this.width = svg.getAttribute('width');
+
+        const height = svg.getAttribute('height');
+        const width = svg.getAttribute('width');
+
+        this.raScaler = new Scaler(width);
+        this.decScaler = new Scaler(height);
 
         for (const row of csv.trim().split('\n')) {
             const star = row.trim().split(',');
             const [ra, dec, mag, name] = star;
 
-            this.raMin = Math.min(ra, this.raMin);
-            this.raMax = Math.max(ra, this.raMax);
-            this.decMin = Math.min(dec, this.decMin);
-            this.decMax = Math.max(dec, this.decMax);
+            this.raScaler.scan(ra);
+            this.decScaler.scan(dec);
 
             this.stars.push(star);
         }
@@ -65,18 +80,18 @@ class StarMap {
 
         // draw grid
         for (let minute = 0; minute < 1440; minute++) {
-            let x = this.scaleRa(minute * 360 / 1440);
+            let x = this.raScaler.scale(minute * 360 / 1440);
 
-            if (x > 0 && x < this.width) {
-                line(this.svg, x, 0, x, this.height, '#222');
+            if (x > 0 && x < width) {
+                line(this.svg, x, 0, x, height, '#222');
             }
         }
 
         for (let dec = -90; dec < 90; dec++) {
-            let y = this.scaleDec(dec);
+            let y = this.decScaler.scale(dec);
 
-            if (y > 0 && y < this.height) {
-                line(this.svg, 0, y, this.width, y, dec % 5 === 0 ? '#444' : '#222');
+            if (y > 0 && y < height) {
+                line(this.svg, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
             }
         }
 
@@ -85,13 +100,13 @@ class StarMap {
 
         this.svg.appendChild(g);
 
-        line(g, 0, 0, 0, this.height, '#555');
+        line(g, 0, 0, 0, height, '#555');
 
         for (let dec = -90; dec < 90; dec++) {
             if (dec % 5 === 0) {
-                let y = this.scaleDec(dec);
+                let y = this.decScaler.scale(dec);
 
-                if (y > 0 && y < this.height) {
+                if (y > 0 && y < height) {
                     label(g, 3, y - 3, '' + dec);
                 }
             }
@@ -104,8 +119,8 @@ class StarMap {
         for (const star of this.stars) {
             let [ra, dec, mag, name] = star;
             let dot = document.createElementNS(svgns, 'circle');
-            let x = this.scaleRa(ra);
-            let y = this.scaleDec(dec);
+            let x = this.raScaler.scale(ra);
+            let y = this.decScaler.scale(dec);
 
             dot.setAttributeNS(null, 'cx', x);
             dot.setAttributeNS(null, 'cy', y);
@@ -128,12 +143,12 @@ class StarMap {
             if (deviceEnabled) {
                 this.inclineSouth = document.createElementNS(svgns, 'g');
 
-                line(this.inclineSouth, 0, 0, this.width, 0, 'blue');
+                line(this.inclineSouth, 0, 0, width, 0, 'blue');
                 this.svg.appendChild(this.inclineSouth);
 
                 this.inclineNorth = document.createElementNS(svgns, 'g');
 
-                line(this.inclineNorth, 0, 0, this.width, 0, 'blue');
+                line(this.inclineNorth, 0, 0, width, 0, 'blue');
                 this.svg.appendChild(this.inclineNorth);
 
                 window.addEventListener('deviceorientation', e => {
@@ -147,18 +162,6 @@ class StarMap {
             }
         }, 1000);
 
-    }
-
-    scale(x, xmin, xmax, size) {
-        return size - ((x - xmin) * (size / (xmax - xmin)));
-    }
-
-    scaleRa(ra) {
-        return this.scale(ra, this.raMin, this.raMax, this.width);
-    }
-
-    scaleDec(dec) {
-        return this.scale(dec, this.decMin, this.decMax, this.height);
     }
 
     moveMeridian() {
@@ -180,7 +183,7 @@ class StarMap {
         let jd0 = floor(jd);
         let eph  = (jd0 - 51544.5) / 36525.0;
         let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
-        let x = this.scaleRa((gst * 15 + longitude) % 360);
+        let x = this.raScaler.scale((gst * 15 + longitude) % 360);
 
         this.meridian.setAttribute('transform', 'translate(' + x + ' 0)');
     }
