@@ -25,6 +25,18 @@
         e.appendChild(line);
     }
 
+    function label(e, x, y, caption) {
+        let label = document.createElementNS(svgns, 'text');
+        let text = document.createTextNode(caption);
+
+        label.setAttributeNS(null, 'fill', '#444');
+        label.appendChild(text);
+        label.setAttributeNS(null, 'x', x);
+        label.setAttributeNS(null, 'y', y);
+        label.setAttributeNS(null, 'font-size', 6);
+        e.appendChild(label);
+    }
+
     class StarMap {
         constructor(csv, svg) {
             this.stars = [];
@@ -50,6 +62,7 @@
 
             this.raMin -= 7.5; // 30 minutes advance time
 
+            // draw grid
             for (let minute = 0; minute < 1440; minute++) {
                 let x = this.scaleRa(minute * 360 / 1440);
 
@@ -78,15 +91,7 @@
                     let y = this.scaleDec(dec);
 
                     if (y > 0 && y < this.height) {
-                        let label = document.createElementNS(svgns, 'text');
-                        let text = document.createTextNode('' + dec);
-
-                        label.setAttributeNS(null, 'fill', '#444');
-                        label.appendChild(text);
-                        label.setAttributeNS(null, 'x', 4);
-                        label.setAttributeNS(null, 'y', y - 4);
-                        label.setAttributeNS(null, 'font-size', 'xx-small');
-                        g.appendChild(label);
+                        label(g, 3, y - 3, '' + dec);
                     }
                 }
             }
@@ -94,6 +99,7 @@
             this.meridian = g;
             this.moveMeridian();
 
+            // draw stars
             for (const star of this.stars) {
                 let [ra, dec, mag, name] = star;
                 let dot = document.createElementNS(svgns, 'circle');
@@ -107,15 +113,7 @@
                 this.svg.appendChild(dot);
 
                 if (name) {
-                    let label = document.createElementNS(svgns, 'text');
-                    let text = document.createTextNode(name);
-
-                    label.setAttributeNS(null, 'fill', '#444');
-                    label.appendChild(text);
-                    label.setAttributeNS(null, 'x', x - 4);
-                    label.setAttributeNS(null, 'y', y - 2);
-                    label.setAttributeNS(null, 'font-size', 'xx-small');
-                    this.svg.appendChild(label);
+                    label(this.svg, x - 4, y - 2, name);
                 }
             }
 
