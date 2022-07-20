@@ -360,7 +360,7 @@
         let h = floor(t);
         let minutes = floor(60.0 * (t % 1));
         let s = Math.round(60.0 * (60.0 * (t % 1) - minutes));
-        let ra = h * 15 + minutes * 0.0166667 + s * 0.000277778;
+        let ra = (h + minutes / 60 + s / 3600) * 15;
         const x = scaleRa(ra);
 
         line.setAttribute('x1', x);
