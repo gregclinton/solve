@@ -444,8 +444,8 @@
 
         device.innerHTML = 'x found device';
 
-        DeviceOrientationEvent.requestPermission().then(() => {
-            device.innerHTML = 'got permission';
+        DeviceOrientationEvent.requestPermission().then(state => {
+            device.innerHTML = state;
 
             window.addEventListener('deviceorientation', e => {
                 device.innerHTML = 'gamma: ' + e.gamma;
