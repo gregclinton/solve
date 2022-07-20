@@ -11,17 +11,19 @@
 </body>
 
 <script>
-    /*
-        https://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+    const svgns = "http://www.w3.org/2000/svg";
 
-        select hip.ra, hip.dec, hip.hpmag
-        from hipparcos.main as hip
-        join cstl.geo as cstl
-            on 1 = contains(point(hip.ra, hip.dec), cstl.p)
-        where
-            cstl.name = 'Scorpius' and
-            hip.hpmag < 7
-    */
+    function line(e, x1, y1, x2, y2, color) {
+        let line = document.createElementNS(svgns, 'line');
+
+        line.setAttributeNS(null, 'x1', x1);
+        line.setAttributeNS(null, 'y1', y1);
+        line.setAttributeNS(null, 'x2', x2);
+        line.setAttributeNS(null, 'y2', y2);
+        line.setAttributeNS(null, 'stroke', color);
+        line.setAttributeNS(null, 'stroke-width', 0.2);
+        e.appendChild(line);
+    }
 
     class StarMap {
         constructor(csv, svg) {
@@ -38,15 +40,106 @@
                 const star = row.trim().split(',');
                 const [ra, dec, mag, name] = star;
 
-                this.raMin = Math.min(ra, raMin);
-                this.raMax = Math.max(ra, raMax);
-                this.decMin = Math.min(dec, decMin);
-                this.decMax = Math.max(dec, decMax);
+                this.raMin = Math.min(ra, this.raMin);
+                this.raMax = Math.max(ra, this.raMax);
+                this.decMin = Math.min(dec, this.decMin);
+                this.decMax = Math.max(dec, this.decMax);
 
                 this.stars.push(star);
             }
 
             this.raMin -= 7.5; // 30 minutes advance time
+
+            for (let minute = 0; minute < 1440; minute++) {
+                let x = this.scaleRa(minute * 360 / 1440);
+
+                if (x > 0 && x < this.width) {
+                    line(this.svg, x, 0, x, this.height, '#222');
+                }
+            }
+
+            for (let dec = -90; dec < 90; dec++) {
+                let y = this.scaleDec(dec);
+
+                if (y > 0 && y < this.height) {
+                    line(this.svg, 0, y, this.width, y, dec % 5 === 0 ? '#444' : '#222');
+                }
+            }
+
+            // draw meridian
+            let g = document.createElementNS(svgns, 'g');
+
+            this.svg.appendChild(g);
+
+            line(g, 0, 0, 0, this.height, '#555');
+
+            for (let dec = -90; dec < 90; dec++) {
+                if (dec % 5 === 0) {
+                    let y = this.scaleDec(dec);
+
+                    if (y > 0 && y < this.height) {
+                        let label = document.createElementNS(svgns, 'text');
+                        let text = document.createTextNode('' + dec);
+
+                        label.setAttributeNS(null, 'fill', '#444');
+                        label.appendChild(text);
+                        label.setAttributeNS(null, 'x', 4);
+                        label.setAttributeNS(null, 'y', y - 4);
+                        label.setAttributeNS(null, 'font-size', 'xx-small');
+                        g.appendChild(label);
+                    }
+                }
+            }
+
+            this.meridian = g;
+            this.moveMeridian();
+
+            for (const star of this.stars) {
+                let [ra, dec, mag, name] = star;
+                let dot = document.createElementNS(svgns, 'circle');
+                let x = this.scaleRa(ra);
+                let y = this.scaleDec(dec);
+
+                dot.setAttributeNS(null, 'cx', x);
+                dot.setAttributeNS(null, 'cy', y);
+                dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
+                dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
+                this.svg.appendChild(dot);
+
+                if (name) {
+                    let label = document.createElementNS(svgns, 'text');
+                    let text = document.createTextNode(name);
+
+                    label.setAttributeNS(null, 'fill', '#444');
+                    label.appendChild(text);
+                    label.setAttributeNS(null, 'x', x - 4);
+                    label.setAttributeNS(null, 'y', y - 2);
+                    label.setAttributeNS(null, 'font-size', 'xx-small');
+                    this.svg.appendChild(label);
+                }
+            }
+
+            setInterval(() => { this.moveMeridian();}, 10000);
+
+            if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
+                const device = document.getElementById('device');
+
+                device.innerHTML = 'a found device';
+
+                DeviceOrientationEvent.requestPermission().then(state => {
+                    device.innerHTML = state;
+
+                    let g = document.createElementNS(svgns, 'g');
+
+                    line(g, 0, 0, this.width, 0, 'blue');
+                    this.svg.appendChild(g);
+
+                    window.addEventListener('deviceorientation', e => {
+                        device.innerHTML = 'gamma: ' + e.gamma;
+                        g.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
+                    });
+                });
+            }
         }
 
         scale(x, xmin, xmax, size) {
@@ -60,9 +153,46 @@
         scaleDec(dec) {
             return this.scale(dec, this.decMin, this.decMax, this.height);
         }
+
+        moveMeridian() {
+            // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
+
+            let longitude = -117.6401;
+            let dt = new Date();
+            let y = dt.getUTCFullYear();
+            let m = dt.getUTCMonth() + 1;
+            let d = dt.getUTCDate();
+
+            if (m <= 2) {
+                m += 12;
+                y--;
+            }
+
+            let floor = Math.floor;
+            let u = dt.getUTCHours() + dt.getUTCMinutes() / 60 + dt.getUTCSeconds() / 3600;
+            let jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;
+            let jd0 = floor(jd);
+            let eph  = (jd0 - 51544.5) / 36525.0;
+            let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
+            let x = this.scaleRa((gst * 15 + longitude) % 360);
+
+            this.meridian.setAttribute('transform', 'translate(' + x + ' 0)');
+        }
     }
 
-    let scorpius = `
+    /*
+        https://dc.zah.uni-heidelberg.de/__system__/adql/query/form
+
+        select hip.ra, hip.dec, hip.hpmag
+        from hipparcos.main as hip
+        join cstl.geo as cstl
+            on 1 = contains(point(hip.ra, hip.dec), cstl.p)
+        where
+            cstl.name = 'Scorpius' and
+            hip.hpmag < 7
+    */
+
+    let scorpius = new StarMap(`
         239.41862315,-20.98302564,5.8531
         241.35931206,-19.80539286,2.594,β
         241.36073017,-19.80184191,4.9235
@@ -316,186 +446,5 @@
         243.9645463,-14.84911862,6.1274
         245.11766582,-12.91111502,6.6468
         243.46211879,-11.83772219,5.3868
-    `;
-
-    let stars = [];
-    let raMin = 0;
-    let raMax = 0;
-    let decMin = 0;
-    let decMax = 0;
-    let width = 0;
-    let height = 0;
-
-    const scale = (x, xmin, xmax, size) => size - ((x - xmin) * (size / (xmax - xmin)));
-    const scaleRa = ra => scale(ra, raMin, raMax, width);
-    const scaleDec = dec => scale(dec, decMin, decMax, height);
-
-    const svgns = "http://www.w3.org/2000/svg";
-
-    function line(e, x1, y1, x2, y2, color) {
-        let line = document.createElementNS(svgns, 'line');
-
-        line.setAttributeNS(null, 'x1', x1);
-        line.setAttributeNS(null, 'y1', y1);
-        line.setAttributeNS(null, 'x2', x2);
-        line.setAttributeNS(null, 'y2', y2);
-        line.setAttributeNS(null, 'stroke', color);
-        line.setAttributeNS(null, 'stroke-width', 0.2);
-        e.appendChild(line);
-    }
-
-    function getStars(csv) {
-        stars = [];
-        raMin = 360;
-        raMax = 0;
-        decMin = 90;
-        decMax = -90;
-
-        for (const row of csv.trim().split('\n')) {
-            const star = row.trim().split(',');
-            const [ra, dec, mag, name] = star;
-
-            raMin = Math.min(ra, raMin);
-            raMax = Math.max(ra, raMax);
-            decMin = Math.min(dec, decMin);
-            decMax = Math.max(dec, decMax);
-
-            stars.push(star);
-        }
-
-        raMin -= 7.5; // 30 minutes advance time
-    }
-
-    function moveMeridian(name) {
-        // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
-
-        let longitude = -117.6401;
-        let dt = new Date();
-        let y = dt.getUTCFullYear();
-        let m = dt.getUTCMonth() + 1;
-        let d = dt.getUTCDate();
-
-        if (m <= 2) {
-            m += 12;
-            y--;
-        }
-
-        let floor = Math.floor;
-        let u = dt.getUTCHours() + dt.getUTCMinutes() / 60 + dt.getUTCSeconds() / 3600;
-        let jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;
-        let jd0 = floor(jd);
-        let eph  = (jd0 - 51544.5) / 36525.0;
-        let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
-
-        width = document.getElementById(name).getAttribute('width');
-        const x = scaleRa((gst * 15 + longitude) % 360);
-
-        document.getElementById(name + '-meridian').setAttribute('transform', 'translate(' + x + ' 0)');
-    }
-
-    function drawStars(name, csv) {
-        const svg = document.getElementById(name);
-
-        height = svg.getAttribute('height');
-        width = svg.getAttribute('width');
-
-        getStars(csv);
-
-        for (let minute = 0; minute < 1440; minute++) {
-            let x = scaleRa(minute * 360 / 1440);
-
-            if (x > 0 && x < width) {
-                line(svg, x, 0, x, height, '#222');
-            }
-        }
-
-        for (let dec = -90; dec < 90; dec++) {
-            let y = scaleDec(dec);
-
-            if (y > 0 && y < height) {
-                line(svg, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
-            }
-        }
-
-        // draw meridian
-        let g = document.createElementNS(svgns, 'g');
-
-        g.setAttribute('id', name + '-meridian');
-        svg.appendChild(g);
-
-        line(g, 0, 0, 0, height, '#555');
-
-        for (let dec = -90; dec < 90; dec++) {
-            if (dec % 5 === 0) {
-                let y = scaleDec(dec);
-
-                if (y > 0 && y < height) {
-                    let label = document.createElementNS(svgns, 'text');
-                    let text = document.createTextNode('' + dec);
-
-                    label.setAttributeNS(null, 'fill', '#444');
-                    label.appendChild(text);
-                    label.setAttributeNS(null, 'x', 4);
-                    label.setAttributeNS(null, 'y', y - 4);
-                    label.setAttributeNS(null, 'font-size', 'xx-small');
-                    g.appendChild(label);
-                }
-            }
-        }
-
-        moveMeridian(name);
-
-        for (const star of stars) {
-            let [ra, dec, mag, name] = star;
-            let dot = document.createElementNS(svgns, 'circle');
-            let x = scaleRa(ra);
-            let y = scaleDec(dec);
-
-            dot.setAttributeNS(null, 'cx', x);
-            dot.setAttributeNS(null, 'cy', y);
-            dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
-            dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
-            svg.appendChild(dot);
-
-            if (name) {
-                let label = document.createElementNS(svgns, 'text');
-                let text = document.createTextNode(name);
-
-                label.setAttributeNS(null, 'fill', '#444');
-                label.appendChild(text);
-                label.setAttributeNS(null, 'x', x - 4);
-                label.setAttributeNS(null, 'y', y - 2);
-                label.setAttributeNS(null, 'font-size', 'xx-small');
-                svg.appendChild(label);
-            }
-        }
-    }
-
-    drawStars('scorpius', scorpius);
-
-    if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
-        const device = document.getElementById('device');
-
-        device.innerHTML = 'a found device';
-
-        DeviceOrientationEvent.requestPermission().then(state => {
-            device.innerHTML = state;
-
-            let svg = document.getElementById('scorpius');
-            let g = document.createElementNS(svgns, 'g');
-
-            line(g, 0, 0, svg.getAttribute('width'), 0, 'blue');
-            svg.appendChild(g);
-
-            window.addEventListener('deviceorientation', e => {
-                device.innerHTML = 'gamma: ' + e.gamma;
-                g.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
-            });
-        });
-    }
-
-    setInterval(() => {
-        getStars(scorpius);
-        moveMeridian('scorpius');
-    }, 10000);
+    `, document.getElementById('scorpius'));
 </script>
