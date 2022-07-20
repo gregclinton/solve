@@ -356,7 +356,12 @@
         let eph  = (jd0 - 51544.5) / 36525.0;
         let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
         let lst = gst + longitude / 15;
-        const x = scaleRa(lst);
+        let t = 24.0 * ((lst / 24.0) % 1);
+        let h = floor(t);
+        let minutes = floor(60.0 * (t % 1));
+        let s = Math.round(60.0 * (60.0 * (t % 1) - minutes));
+        let ra = h * 15 + minutes * 0.0166667;
+        const x = scaleRa(ra);
 
         line.setAttribute('x1', x);
         line.setAttribute('x2', x);
