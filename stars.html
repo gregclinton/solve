@@ -124,7 +124,7 @@
             if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
                 const device = document.getElementById('device');
 
-                device.innerHTML = 'a found device';
+                device.innerHTML = 'b found device';
 
                 DeviceOrientationEvent.requestPermission().then(state => {
                     device.innerHTML = state;
