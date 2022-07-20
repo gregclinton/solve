@@ -442,9 +442,14 @@
         DeviceOrientationEvent.requestPermission().then(state => {
             device.innerHTML = state;
 
+            let g = document.createElementNS(svgns, 'g');
+
+            line(g, 0, 0, svg.getAttribute('width'), 0, 'blue');
+            svg.appendChild(g);
+
             window.addEventListener('deviceorientation', e => {
                 device.innerHTML = 'gamma: ' + e.gamma;
-                line(document.getElementById('scorpius'), 0, e.gamma, svg.getAttribute('width'), y, 'blue');
+                g.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
             });
         });
     }
