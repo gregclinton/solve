@@ -133,8 +133,8 @@
 
 
             // create and update incline
-            setInterval(() => {
-                if (deviceEnabled && !this.incline) {
+            let interval = setInterval(() => {
+                if (deviceEnabled) {
                     this.incline = document.createElementNS(svgns, 'g');
 
                     line(this.incline, 0, 0, this.width, 0, 'blue');
@@ -143,6 +143,8 @@
                     window.addEventListener('deviceorientation', e => {
                         this.incline.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
                     });
+
+                    clearInterval(interval);
                 }
             }, 1000);
 
