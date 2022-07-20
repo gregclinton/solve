@@ -1,6 +1,6 @@
 <body style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;">
 
-<div id="device" onclick="DeviceOrientationEvent.requestPermission().then(() => { document.getElementById('device').remove()} )">
+<div id="device" onclick="enableDevice()">
    device
 </div>
 
@@ -11,6 +11,19 @@
 </body>
 
 <script>
+    function enableDevice() {
+        DeviceOrientationEvent.requestPermission().then(() => {
+            document.getElementById('device').remove();
+
+            // update incline
+            window.addEventListener('deviceorientation', e => {
+                if (e && e.gamma) {
+                    incline.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
+                }
+            });
+        });
+    }
+
     const svgns = "http://www.w3.org/2000/svg";
 
     function line(e, x1, y1, x2, y2, color) {
@@ -122,13 +135,6 @@
 
             line(incline, 0, 0, this.width, 0, 'blue');
             this.svg.appendChild(incline);
-
-            // update incline
-            window.addEventListener('deviceorientation', e => {
-                if (e && e.gamma) {
-                    incline.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
-                }
-            });
 
             // update meridian
             setInterval(() => { this.moveMeridian();}, 10000);
