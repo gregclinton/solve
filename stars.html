@@ -21,12 +21,6 @@
 
 //    let meridian = 240;
 
-    let inclination = 0;
-
-    window.addEventListener('deviceorientation', e => {
-        inclination = e.gamma;
-    });
-
     function lst() {
 //        return meridian++;
         let longitude = -117.6401;
@@ -452,7 +446,7 @@
             let x = scaleRa(ra);
             let y = scaleDec(dec);
 
-            dot.setAttributeNS(null, 'cx', x + inclination);
+            dot.setAttributeNS(null, 'cx', x);
             dot.setAttributeNS(null, 'cy', y);
             dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
             dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
@@ -478,5 +472,21 @@
     setInterval(() => {
         getStars(scorpius);
         moveMeridian('scorpius');
+
+        window.addEventListener('deviceorientation', e => {
+            const svg = document.getElementById('scorpius');
+
+            width = svg.getAttribute('width');
+
+            let line = document.createElementNS(svgns, 'line');
+            let y = e.gamma;
+
+            line.setAttributeNS(null, 'x1', 0);
+            line.setAttributeNS(null, 'x2', width);
+            line.setAttributeNS(null, 'y1', y);
+            line.setAttributeNS(null, 'y2', y);
+            line.setAttributeNS(null, 'stroke', 'blue');
+            svg.appendChild(line);            
+        });
     }, 10000);
 </script>
