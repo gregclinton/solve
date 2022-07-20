@@ -1,8 +1,9 @@
-<body style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;">
+<body
+    onclick="enableDevice()"
+    style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;"
+>
 
-<div id="incline" onclick="enableDevice()">
-   click me
-</div>
+<div id="incline"></div>
 
 <div>
     <svg id="scorpius" height="700" width="500"></svg>
@@ -11,13 +12,19 @@
 </body>
 
 <script>
-    const longitude = -117.6401;
+    let longitude = 0;
+    let latitude = 0;
+
     let deviceEnabled = false;
 
     function enableDevice() {
         DeviceOrientationEvent.requestPermission().then(() => {
             deviceEnabled = true;
             document.getElementById('incline').innerText = '';
+            navigator.geolocation.getCurrentPosition(position => {
+                longitude = position.coords.longitude;
+                latitude = position.coords.latitude;
+            })
         });
     }
 
@@ -132,20 +139,25 @@
                 this.moveMeridian();
             }, 10000);
 
-
             // create and update incline
             let interval = setInterval(() => {
                 if (deviceEnabled) {
-                    this.incline = document.createElementNS(svgns, 'g');
+                    this.inclineSouth = document.createElementNS(svgns, 'g');
 
-                    line(this.incline, 0, 0, this.width, 0, 'blue');
-                    this.svg.appendChild(this.incline);
+                    line(this.inclineSouth, 0, 0, this.width, 0, 'blue');
+                    this.svg.appendChild(this.inclineSouth);
+
+                    this.inclineNorth = document.createElementNS(svgns, 'g');
+
+                    line(this.inclineNorth, 0, 0, this.width, 0, 'blue');
+                    this.svg.appendChild(this.inclineNorth);
 
                     window.addEventListener('deviceorientation', e => {
-                        let dec = e.beta - (90 - longitude);
+                        document.getElementById('incline').innerHTML = '' + (e.beta - (90 - latitude));
+                        let set = (e, dec) => e.setAttribute('transform', 'translate(0 ' + this.scaleDec(dec) + ')');
 
-                        document.getElementById('incline').innerHTML = '' + dec;
-                        this.incline.setAttribute('transform', 'translate(0 ' + this.scaleDec(dec) + ')');
+                        set(this.inclineSouth, e.beta - (90 - latitude));
+                        set(this.inclineNorth, 90 - e.beta + (90 - latitude));
                     });
 
                     clearInterval(interval);
