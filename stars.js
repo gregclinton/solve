@@ -71,11 +71,10 @@ class StarMap {
             const [ra, dec, mag, name] = star;
 
             this.raScaler.scan(ra);
+            this.raScaler.scan(ra - 7.5); // 30 minutes advance time
             this.decScaler.scan(dec);
             this.stars.push(star);
         }
-
-        this.raMin -= 7.5; // 30 minutes advance time
 
         // draw grid
         for (let minute = 0; minute < 1440; minute++) {
