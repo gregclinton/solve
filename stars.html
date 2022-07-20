@@ -293,7 +293,7 @@
 
     const svgns = "http://www.w3.org/2000/svg";
 
-    function line(e, id, x1, y1, x2, y2, color) {
+    function line(e, x1, y1, x2, y2, color) {
         let line = document.createElementNS(svgns, 'line');
 
         line.setAttributeNS(null, 'x1', x1);
@@ -301,12 +301,7 @@
         line.setAttributeNS(null, 'x2', x2);
         line.setAttributeNS(null, 'y2', y2);
         line.setAttributeNS(null, 'stroke', color);
-        line.setAttributeNS(null, 'stroke-width', 0.8);
-
-        if (id) {
-            line.setAttribute('id', id);
-        }
-
+        line.setAttributeNS(null, 'stroke-width', 0.2);
         e.appendChild(line);
     }
 
@@ -371,7 +366,7 @@
             let x = scaleRa(minute * 360 / 1440);
 
             if (x > 0 && x < width) {
-                line(svg, false, x, 0, x, height, '#222');
+                line(svg, x, 0, x, height, '#222');
             }
         }
 
@@ -379,7 +374,7 @@
             let y = scaleDec(dec);
 
             if (y > 0 && y < height) {
-                line(svg, false, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
+                line(svg, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
             }
         }
 
@@ -389,7 +384,7 @@
         g.setAttribute('id', name + '-meridian');
         svg.appendChild(g);
 
-        line(g, false, 0, 0, 0, height, '#555');
+        line(g, 0, 0, 0, height, '#555');
 
         for (let dec = -90; dec < 90; dec++) {
             if (dec % 5 === 0) {
@@ -449,7 +444,7 @@
 
             window.addEventListener('deviceorientation', e => {
                 device.innerHTML = 'gamma: ' + e.gamma;
-                line(document.getElementById('scorpius'), false, 0, e.gamma, svg.getAttribute('width'), y, 'blue');
+                line(document.getElementById('scorpius'), 0, e.gamma, svg.getAttribute('width'), y, 'blue');
             });
         });
     }
