@@ -141,9 +141,7 @@
                     this.svg.appendChild(this.incline);
 
                     window.addEventListener('deviceorientation', e => {
-                        let floor = Math.floor;
-                        document.getElementById('incline').innerText = 'alpha: ' + floor(e.alpha) + '     beta: ' + floor(e.beta) + '     gamma: ' + floor(e.gamma);
-                        this.incline.setAttribute('transform', 'translate(0 ' + e.alpha + ')');
+                        this.incline.setAttribute('transform', 'translate(0 ' + this.scaleDec(e.beta - 56.34) + ')');
                     });
 
                     clearInterval(interval);
