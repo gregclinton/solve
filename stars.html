@@ -1,6 +1,6 @@
 <body style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;">
 
-<div id="device" onclick="enableDevice()">
+<div id="incline" onclick="enableDevice()">
    click me
 </div>
 
@@ -16,7 +16,7 @@
     function enableDevice() {
         DeviceOrientationEvent.requestPermission().then(() => {
             deviceEnabled = true;
-            document.getElementById('device').remove();
+            document.getElementById('incline').innerText = '';
         });
     }
 
@@ -141,7 +141,8 @@
                     this.svg.appendChild(this.incline);
 
                     window.addEventListener('deviceorientation', e => {
-                        this.incline.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
+                        document.getElementById('incline').innerText = 'alpha: ' + e.alpha + ' beta: ' + e.beta + ' gamma: ' + e.gamma;
+                        this.incline.setAttribute('transform', 'translate(0 ' + e.alpha + ')');
                     });
 
                     clearInterval(interval);
