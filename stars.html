@@ -1,6 +1,6 @@
 <body style="background-color:black;color:brown;font-family:sans-serif;font-size: x-small;">
 
-<div id="device">
+<div id="device" onclick="DeviceOrientationEvent.requestPermission().then(() => { document.getElementById('device').remove()} )">
    device
 </div>
 
@@ -119,25 +119,16 @@
 
             setInterval(() => { this.moveMeridian();}, 10000);
 
-            if (DeviceOrientationEvent && DeviceOrientationEvent.requestPermission) {
-                const device = document.getElementById('device');
+            let inclination = document.createElementNS(svgns, 'g');
 
-                device.innerHTML = 'b found device';
+            line(inclination, 0, 0, this.width, 0, 'blue');
+            this.svg.appendChild(inclination);
 
-                DeviceOrientationEvent.requestPermission().then(state => {
-                    device.innerHTML = state;
-
-                    let g = document.createElementNS(svgns, 'g');
-
-                    line(g, 0, 0, this.width, 0, 'blue');
-                    this.svg.appendChild(g);
-
-                    window.addEventListener('deviceorientation', e => {
-                        device.innerHTML = 'gamma: ' + e.gamma;
-                        g.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
-                    });
-                });
-            }
+            window.addEventListener('deviceorientation', e => {
+                if (e && e.gamma) {
+                    inclination.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
+                }
+            });
         }
 
         scale(x, xmin, xmax, size) {
