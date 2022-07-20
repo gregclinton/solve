@@ -442,7 +442,7 @@
         DeviceOrientationEvent.requestPermission().then(state => {
             device.innerHTML = state;
 
-            let svg = document.getElementById(name);
+            let svg = document.getElementById('scorpius');
             let g = document.createElementNS(svgns, 'g');
 
             line(g, 0, 0, svg.getAttribute('width'), 0, 'blue');
