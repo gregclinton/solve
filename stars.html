@@ -24,11 +24,41 @@
     */
 
     class StarMap {
-        constructor(csv) {
-            this.csv = csv;
+        constructor(csv, svg) {
+            this.stars = [];
+            this.raMin = 360;
+            this.raMax = 0;
+            this.decMin = 90;
+            this.decMax = -90;
+            this.svg = svg;
+            this.height = svg.getAttribute('height');
+            this.width = svg.getAttribute('width');
+
+            for (const row of csv.trim().split('\n')) {
+                const star = row.trim().split(',');
+                const [ra, dec, mag, name] = star;
+
+                this.raMin = Math.min(ra, raMin);
+                this.raMax = Math.max(ra, raMax);
+                this.decMin = Math.min(dec, decMin);
+                this.decMax = Math.max(dec, decMax);
+
+                this.stars.push(star);
+            }
+
+            this.raMin -= 7.5; // 30 minutes advance time
         }
 
-        draw() {
+        scale(x, xmin, xmax, size) {
+            return size - ((x - xmin) * (size / (xmax - xmin)));
+        }
+
+        scaleRa(ra) {
+            return this.scale(ra, this.raMin, this.raMax, this.width);
+        }
+
+        scaleDec(dec) {
+            return this.scale(dec, this.decMin, this.decMax, this.height);
         }
     }
 
