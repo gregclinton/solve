@@ -469,6 +469,8 @@
 
     drawStars('scorpius', scorpius);
 
+    DeviceOrientationEvent.requestPermission();
+
     setInterval(() => {
         getStars(scorpius);
         moveMeridian('scorpius');
