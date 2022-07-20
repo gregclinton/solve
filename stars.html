@@ -20,9 +20,6 @@
     function enableDevice() {
         DeviceOrientationEvent.requestPermission().then(() => {
             deviceEnabled = true;
-            latitude = 35;
-            longitude = -110;
-            return;
             navigator.geolocation.getCurrentPosition(position => {
                 longitude = position.coords.longitude;
                 latitude = position.coords.latitude;
