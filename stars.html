@@ -117,18 +117,21 @@
                 }
             }
 
-            setInterval(() => { this.moveMeridian();}, 10000);
+            // draw incline
+            let incline = document.createElementNS(svgns, 'g');
 
-            let inclination = document.createElementNS(svgns, 'g');
+            line(incline, 0, 0, this.width, 0, 'blue');
+            this.svg.appendChild(incline);
 
-            line(inclination, 0, 0, this.width, 0, 'blue');
-            this.svg.appendChild(inclination);
-
+            // update incline
             window.addEventListener('deviceorientation', e => {
                 if (e && e.gamma) {
-                    inclination.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
+                    incline.setAttribute('transform', 'translate(0 ' + e.gamma + ')');
                 }
             });
+
+            // update meridian
+            setInterval(() => { this.moveMeridian();}, 10000);
         }
 
         scale(x, xmin, xmax, size) {
