@@ -155,7 +155,7 @@
                         let set = (e, dec) => e.setAttribute('transform', 'translate(0 ' + this.scaleDec(dec) + ')');
 
                         set(this.inclineSouth, e.beta - (90 - latitude));
-                        set(this.inclineNorth, 90 - e.beta + (90 - latitude));
+                        set(this.inclineNorth, 90 - Math.abs(e.beta - latitude));
                     });
 
                     clearInterval(interval);
