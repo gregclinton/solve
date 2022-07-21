@@ -17,7 +17,7 @@ function enableDevice() {
 const svgns = "http://www.w3.org/2000/svg";
 
 function line(e, x1, y1, x2, y2, color) {
-    let line = document.createElementNS(svgns, 'line');
+    const line = document.createElementNS(svgns, 'line');
 
     line.setAttributeNS(null, 'x1', x1);
     line.setAttributeNS(null, 'y1', y1);
@@ -65,7 +65,7 @@ function plot(csv, svg) {
 
     // draw grid
     for (let minute = 0; minute < 1440; minute++) {
-        let x = raScaler.scale(minute * 360 / 1440);
+        const x = raScaler.scale(minute * 360 / 1440);
 
         if (x > 0 && x < width) {
             line(svg, x, 0, x, height, '#222');
@@ -73,7 +73,7 @@ function plot(csv, svg) {
     }
 
     for (let dec = -90; dec < 90; dec++) {
-        let y = decScaler.scale(dec);
+        const y = decScaler.scale(dec);
 
         if (y > 0 && y < height) {
             line(svg, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
@@ -87,10 +87,10 @@ function plot(csv, svg) {
 
     // draw stars
     for (const star of stars) {
-        let [ra, dec, mag, name] = star;
-        let dot = document.createElementNS(svgns, 'circle');
-        let x = raScaler.scale(ra);
-        let y = decScaler.scale(dec);
+        const [ra, dec, mag, name] = star;
+        const dot = document.createElementNS(svgns, 'circle');
+        const x = raScaler.scale(ra);
+        const y = decScaler.scale(dec);
 
         dot.setAttributeNS(null, 'cx', x);
         dot.setAttributeNS(null, 'cy', y);
@@ -99,8 +99,8 @@ function plot(csv, svg) {
         svg.appendChild(dot);
 
         if (name) {
-            let label = document.createElementNS(svgns, 'text');
-            let text = document.createTextNode(name);
+            const label = document.createElementNS(svgns, 'text');
+            const text = document.createTextNode(name);
 
             label.setAttributeNS(null, 'fill', '#444');
             label.appendChild(text);
@@ -115,38 +115,38 @@ function plot(csv, svg) {
     setInterval(() => {
         // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
 
-        let dt = new Date();
+        const dt = new Date();
         let y = dt.getUTCFullYear();
         let m = dt.getUTCMonth() + 1;
-        let d = dt.getUTCDate();
+        const d = dt.getUTCDate();
 
         if (m <= 2) {
             m += 12;
             y--;
         }
 
-        let floor = Math.floor;
-        let u = dt.getUTCHours() + dt.getUTCMinutes() / 60 + dt.getUTCSeconds() / 3600;
-        let jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;
-        let jd0 = floor(jd);
-        let eph  = (jd0 - 51544.5) / 36525.0;
-        let gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
-        let x = raScaler.scale((gst * 15 + longitude) % 360);
+        const floor = Math.floor;
+        const u = dt.getUTCHours() + dt.getUTCMinutes() / 60 + dt.getUTCSeconds() / 3600;
+        const jd = floor(365.25 * (y + 4716)) + floor(30.6001 * (m + 1)) + d - 13 -1524.5 + u / 24.0 - 2400000.5;
+        const jd0 = floor(jd);
+        const eph  = (jd0 - 51544.5) / 36525.0;
+        const gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
+        const x = raScaler.scale((gst * 15 + longitude) % 360);
 
         meridian.setAttribute('x1', x);
         meridian.setAttribute('x2', x);
     }, 10000);
 
     // update inclines
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
         if (deviceEnabled) {
             window.addEventListener('deviceorientation', e => {
-                let decSouth = decScaler.scale(e.beta - (90 - latitude));
+                const decSouth = decScaler.scale(e.beta - (90 - latitude));
 
                 inclineSouth.setAttribute('y1', decSouth);
                 inclineSouth.setAttribute('y2', decSouth);
 
-                let decNorth = decScaler.scale(90 - Math.abs(e.beta - latitude));
+                const decNorth = decScaler.scale(90 - Math.abs(e.beta - latitude));
 
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
