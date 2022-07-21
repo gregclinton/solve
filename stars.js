@@ -3,13 +3,15 @@ let latitude = 0;
 let deviceEnabled = false;
 
 function enableDevice() {
-    DeviceOrientationEvent.requestPermission().then(() => {
-        deviceEnabled = true;
-        navigator.geolocation.getCurrentPosition(position => {
-            longitude = position.coords.longitude;
-            latitude = position.coords.latitude;
-        })
-    });
+    if (!deviceEnabled) {
+        DeviceOrientationEvent.requestPermission().then(() => {
+            deviceEnabled = true;
+            navigator.geolocation.getCurrentPosition(position => {
+                longitude = position.coords.longitude;
+                latitude = position.coords.latitude;
+            })
+        });
+    }
 }
 
 const svgns = "http://www.w3.org/2000/svg";
