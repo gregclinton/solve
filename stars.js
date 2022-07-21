@@ -26,7 +26,7 @@ function line(e, x1, y1, x2, y2, color) {
     line.setAttributeNS(null, 'stroke', color);
     line.setAttributeNS(null, 'stroke-width', 0.2);
     e.appendChild(line);
-    return e;
+    return line;
 }
 
 class Scaler {
