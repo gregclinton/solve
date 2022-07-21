@@ -137,7 +137,7 @@ function plot(csv, svg) {
         meridian.setAttribute('x2', x);
     }, 10000);
 
-    // create and update incline
+    // update inclines
     let interval = setInterval(() => {
         if (deviceEnabled) {
             window.addEventListener('deviceorientation', e => {
