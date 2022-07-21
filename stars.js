@@ -47,7 +47,6 @@ class Scaler {
 class StarMap {
     constructor(csv, svg) {
         this.stars = [];
-        this.svg = svg;
 
         const height = svg.getAttribute('height');
         const width = svg.getAttribute('width');
@@ -70,7 +69,7 @@ class StarMap {
             let x = this.raScaler.scale(minute * 360 / 1440);
 
             if (x > 0 && x < width) {
-                line(this.svg, x, 0, x, height, '#222');
+                line(svg, x, 0, x, height, '#222');
             }
         }
 
@@ -78,7 +77,7 @@ class StarMap {
             let y = this.decScaler.scale(dec);
 
             if (y > 0 && y < height) {
-                line(this.svg, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
+                line(svg, 0, y, width, y, dec % 5 === 0 ? '#444' : '#222');
             }
         }
 
@@ -97,12 +96,12 @@ class StarMap {
             dot.setAttributeNS(null, 'cy', y);
             dot.setAttributeNS(null, 'r', mag < 3 ? 1 : 1);
             dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + (mag < 3 ? 'f' : mag < 5 ? 'a' : '6') + '00');
-            this.svg.appendChild(dot);
+            svg.appendChild(dot);
 
             if (name) {
                 let label = document.createElementNS(svgns, 'text');
                 let text = document.createTextNode(name);
-            
+
                 label.setAttributeNS(null, 'fill', '#444');
                 label.appendChild(text);
                 label.setAttributeNS(null, 'x', x - 4);
@@ -120,21 +119,19 @@ class StarMap {
         // create and update incline
         let interval = setInterval(() => {
             if (deviceEnabled) {
-                this.inclineSouth = document.createElementNS(svgns, 'g');
-
-                line(this.inclineSouth, 0, 0, width, 0, 'blue');
-                this.svg.appendChild(this.inclineSouth);
-
-                this.inclineNorth = document.createElementNS(svgns, 'g');
-
-                line(this.inclineNorth, 0, 0, width, 0, 'blue');
-                this.svg.appendChild(this.inclineNorth);
+                const inclineSouth = line(svg, 0, 0, width, 0, 'blue');
+                const inclineNorth = line(svg, 0, 0, width, 0, 'blue');
 
                 window.addEventListener('deviceorientation', e => {
-                    let set = (e, dec) => e.setAttribute('transform', 'translate(0 ' + this.decScaler.scale(dec) + ')');
+                    let decSouth = this.decScaler.scale(e.beta - (90 - latitude));
 
-                    set(this.inclineSouth, e.beta - (90 - latitude));
-                    set(this.inclineNorth, 90 - Math.abs(e.beta - latitude));
+                    inclineSouth.setAttribute('y1', decSouth);
+                    inclineSouth.setAttribute('y2', decSouth);
+
+                    let decNorth = this.decScaler.scale(90 - Math.abs(e.beta - latitude));
+
+                    inclineNorth.setAttribute('y1', decNorth);
+                    inclineNorth.setAttribute('y2', decNorth);
                 });
 
                 clearInterval(interval);
