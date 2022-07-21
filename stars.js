@@ -155,5 +155,4 @@ function plot(csv, svg) {
             clearInterval(interval);
         }
     }, 1000);
-
 }
