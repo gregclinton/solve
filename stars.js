@@ -5,10 +5,10 @@ let deviceEnabled = false;
 function enableDevice() {
     if (!deviceEnabled) {
         DeviceOrientationEvent.requestPermission().then(() => {
-            deviceEnabled = true;
             navigator.geolocation.getCurrentPosition(position => {
                 longitude = position.coords.longitude;
                 latitude = position.coords.latitude;
+                deviceEnabled = true;
             })
         });
     }
