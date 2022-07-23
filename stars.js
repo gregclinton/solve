@@ -87,7 +87,7 @@ function plot(csv, svg) {
 
     // draw meridian and inclines
     const meridian = vline(svg, 0, '#555');
-    const heading = vline(svg, 0, '#00f');
+    const heading = vline(svg, 0, '#00a');
 
     const inclineSouth = hline(svg, 0, '#555');
     const inclineNorth = hline(svg, 0, '#555');
