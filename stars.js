@@ -147,7 +147,7 @@ function plot(csv, svg) {
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
 
-                const direction = raScaler.scale(-e.alpha + 90 + longitude);
+                const direction = raScaler.scale((-e.alpha + 90 + longitude) % 360);
 
                 heading.setAttribute('x1', direction);
                 heading.setAttribute('x2', direction);
