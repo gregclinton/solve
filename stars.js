@@ -29,6 +29,10 @@ function line(e, x1, y1, x2, y2, color) {
     return line;
 }
 
+function vline(e, x) {
+    return line(e, x, 0)
+}
+
 class Scaler {
     constructor(size) {
         this.low = Number.MAX_VALUE;
@@ -53,6 +57,16 @@ function plot(csv, svg) {
     const raScaler = new Scaler(width);
     const decScaler = new Scaler(height);
 
+    const vline = (e, ra, color) => {
+        const x = raScaler.scale(ra);
+        return line(e, x, 0, x, height, color);
+    };
+
+    const hline = (e, dec, color) => {
+        const y = decScaler.scale(dec);
+        return line(e, 0, y, width, y, color);
+    };
+
     for (const row of csv.trim().split('\n')) {
         const star = row.trim().split(',');
         const [ra, dec, mag, name] = star;
@@ -64,26 +78,18 @@ function plot(csv, svg) {
 
     // draw grid
     for (let minute = 0; minute < 1440; minute++) {
-        const x = raScaler.scale(minute * 360 / 1440);
-
-        if (x > 0 && x < width) {
-            line(svg, x, 0, x, height, '#222');
-        }
+        vline(svg, minute * 360 / 1440, '#222');
     }
 
-    for (let dec = -90; dec < 90; dec++) {
-        const y = decScaler.scale(dec);
-
-        if (y > 0 && y < height) {
-            line(svg, 0, y, width, y, '#222');
-        }
+    for (let dec = -50; dec < 90; dec++) {
+        hline(svg, dec, '#222');
     }
 
     // draw meridian and inclines
-    const meridian = line(svg, 0, 0, 0, height, '#555');
-    const heading = line(svg, 0, 0, 0, height, '#005');
-    const inclineSouth = line(svg, 0, 0, width, 0, '#555');
-    const inclineNorth = line(svg, 0, 0, width, 0, '#555');
+    const meridian = vline(svg, 0, '#555');
+    const heading = vline(svg, 0, '#005');
+    const inclineSouth = hline(svg, 0, '#555');
+    const inclineNorth = hline(svg, 0, '#555');
 
     // draw stars
     for (const star of stars) {
@@ -147,7 +153,7 @@ function plot(csv, svg) {
                 heading.setAttribute('x2', direction);
 
                 const round = x => Math.round(x * 10) / 10;
-                document.getElementById('device').innerHTML = ' alpha: ' + round(e.alpha) + ' beta: ' + round(e.beta) + ' gamma: ' + round(e.gamma);
+                document.getElementById('device').innerHTML = 'xxx alpha: ' + round(e.alpha) + ' beta: ' + round(e.beta) + ' gamma: ' + round(e.gamma);
             });
 
             clearInterval(interval);
