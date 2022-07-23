@@ -129,12 +129,14 @@ function plot(csv, svg) {
     const interval = setInterval(() => {
         if (deviceEnabled) {
             window.addEventListener('deviceorientation', e => {
-                const decSouth = decScaler.scale(e.beta - (90 - latitude));
+//                const reading = e.beta;
+                const reading = e.alpha;
+                const decSouth = decScaler.scale(reading - (90 - latitude));
 
                 inclineSouth.setAttribute('y1', decSouth);
                 inclineSouth.setAttribute('y2', decSouth);
 
-                const decNorth = decScaler.scale(90 - Math.abs(e.beta - latitude));
+                const decNorth = decScaler.scale(90 - Math.abs(reading - latitude));
 
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
