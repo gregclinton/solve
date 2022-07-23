@@ -78,11 +78,11 @@ function plot(csv, svg) {
 
     // draw grid
     for (let minute = 0; minute < 1440; minute++) {
-        vline(svg, minute * 360 / 1440, '#600').setAttributeNS(null, 'stroke-dasharray', '0.2,0.2');
+        vline(svg, minute * 360 / 1440, '#400').setAttributeNS(null, 'stroke-dasharray', '0.2,0.2');
     }
 
     for (let dec = -50; dec < 90; dec++) {
-        hline(svg, dec, '#600').setAttributeNS(null, 'stroke-dasharray', '0.2,0.2');;
+        hline(svg, dec, '#400').setAttributeNS(null, 'stroke-dasharray', '0.2,0.2');;
     }
 
     // draw meridian and inclines
