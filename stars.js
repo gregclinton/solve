@@ -130,7 +130,7 @@ function plot(csv, svg) {
         if (deviceEnabled) {
             window.addEventListener('deviceorientation', e => {
 //                const reading = e.beta;
-                const reading = e.gamma;
+                const reading = e.alpha;
                 const decSouth = decScaler.scale(reading - (90 - latitude));
 
                 inclineSouth.setAttribute('y1', decSouth);
