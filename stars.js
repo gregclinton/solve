@@ -87,7 +87,7 @@ function plot(csv, svg) {
 
     // draw meridian and inclines
     const meridian = vline(svg, 0, '#555');
-    const heading = vline(svg, 0, '#005');
+    const heading = vline(svg, 0, '#00a');
     const inclineSouth = hline(svg, 0, '#555');
     const inclineNorth = hline(svg, 0, '#555');
 
@@ -151,9 +151,6 @@ function plot(csv, svg) {
 
                 heading.setAttribute('x1', direction);
                 heading.setAttribute('x2', direction);
-
-                const round = x => Math.round(x * 10) / 10;
-                document.getElementById('device').innerHTML = 'xxx alpha: ' + round(e.alpha) + ' beta: ' + round(e.beta) + ' gamma: ' + round(e.gamma);
             });
 
             clearInterval(interval);
