@@ -81,6 +81,7 @@ function plot(csv, svg) {
 
     // draw meridian and inclines
     const meridian = line(svg, 0, 0, 0, height, '#555');
+    const heading = line(svg, 0, 0, 0, height, '#005');
     const inclineSouth = line(svg, 0, 0, width, 0, '#555');
     const inclineNorth = line(svg, 0, 0, width, 0, '#555');
 
@@ -94,7 +95,7 @@ function plot(csv, svg) {
         dot.setAttributeNS(null, 'cx', x);
         dot.setAttributeNS(null, 'cy', y);
         dot.setAttributeNS(null, 'r', 0.5);
-        dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' + 
+        dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
             (mag < 1 ? 'faa' : mag < 2 ? 'f44' : mag < 3 ? 'f00' : mag < 4 ? 'a00' : mag < 5 ? '800' : mag < 6 ? '600' : '400'));
         svg.appendChild(dot);
     }
@@ -129,16 +130,21 @@ function plot(csv, svg) {
     const interval = setInterval(() => {
         if (deviceEnabled) {
             window.addEventListener('deviceorientation', e => {
-                const reading = e.beta;
-                const decSouth = decScaler.scale(reading - (90 - latitude));
+                const incline = e.beta + (Math.abs(e.beta) < 5 ? 90 : 0);
+                const decSouth = decScaler.scale(incline - (90 - latitude));
 
                 inclineSouth.setAttribute('y1', decSouth);
                 inclineSouth.setAttribute('y2', decSouth);
 
-                const decNorth = decScaler.scale(90 - Math.abs(reading - latitude));
+                const decNorth = decScaler.scale(90 - Math.abs(incline - latitude));
 
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
+
+                const direction = raScaler.scale((e.alpha - 90) % 360);
+
+                heading.setAttribute('x1', direction);
+                heading.setAttribute('x2', direction);
 
                 const round = x => Math.round(x * 10) / 10;
                 document.getElementById('device').innerHTML = ' alpha: ' + round(e.alpha) + ' beta: ' + round(e.beta) + ' gamma: ' + round(e.gamma);
