@@ -96,11 +96,9 @@ function plot(csv) {
     for (const star of stars) {
         const [ra, dec, mag] = star;
         const dot = document.createElementNS(svgns, 'circle');
-        const x = raScaler.scale(ra);
-        const y = decScaler.scale(dec);
 
-        dot.setAttributeNS(null, 'cx', x);
-        dot.setAttributeNS(null, 'cy', y);
+        dot.setAttributeNS(null, 'cx', raScaler.scale(ra));
+        dot.setAttributeNS(null, 'cy',  decScaler.scale(dec));
         dot.setAttributeNS(null, 'r', 0.5);
         dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
             (mag < 1 ? 'faa' : mag < 2 ? 'f44' : mag < 3 ? 'f00' : mag < 4 ? 'a00' : mag < 5 ? '800' : mag < 6 ? '600' : '400'));
@@ -121,21 +119,17 @@ function plot(csv) {
 
         scopeStars = document.createElementNS(svgns, 'g');
         document.getElementById('scope').appendChild(scopeStars);
-        const height = 80;
-        const width = 80;
-        const raScaler = new Scaler(width);
-        const decScaler = new Scaler(height);
-    
+        const size = 80;
+        const scale = x => size / 2  + x;
+
         for (const star of stars) {
             const [ra, dec, mag] = star;
 
             if (Math.abs(ra - lst) < 0.5 && Math.abs(dec - decSouth) < 0.5) {
                 const dot = document.createElementNS(svgns, 'circle');
-                const x = 40 + ra - lst;
-                const y = 40 + dec - decSouth;
 
-                dot.setAttributeNS(null, 'cx', x);
-                dot.setAttributeNS(null, 'cy', y);
+                dot.setAttributeNS(null, 'cx', scale(ra - lst));
+                dot.setAttributeNS(null, 'cy', scale(dec - decSouth));
                 dot.setAttributeNS(null, 'r', 0.25);
                 dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
                     (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
