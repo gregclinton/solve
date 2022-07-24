@@ -109,6 +109,7 @@ function plot(csv) {
     let decSouth = 0;
     let decNorth = 0;
     let scopeStars = false;
+    let lane = [];
 
     function redrawScope() {
         const scope = document.getElementById('scope');
@@ -122,10 +123,10 @@ function plot(csv) {
         const size = 80;
         const scale = x => size / 2 + x * size;
 
-        for (const star of stars) {
+        for (const star of lane) {
             const [ra, dec, mag] = star;
 
-            if (Math.abs(ra - lst) < 0.5 && Math.abs(dec - decSouth) < 0.5) {
+            if (Math.abs(dec - decSouth) < 0.5) {
                 const dot = document.createElementNS(svgns, 'circle');
 
                 dot.setAttributeNS(null, 'cx', scale(ra - lst));
@@ -187,6 +188,19 @@ function plot(csv) {
             clearInterval(interval);
         }
     }, 1000);
+
+    // update lane
+    setInterval(() => {
+        lane = [];
+
+        for (const star of stars) {
+            const [ra] = star;
+
+            if (Math.abs(ra - lst) < 0.5) {
+                lane.push(star);
+            }
+        }
+    }, 10000);
 }
 
 /*
