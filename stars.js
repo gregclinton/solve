@@ -108,13 +108,12 @@ function plot(csv) {
     }
 
     let lst = 0;
-    let incline = 0;
+    let decSouth = 0;
+    let decNorth = 0;
     let scopeStars = false;
 
     function redrawScope() {
         const scope = document.getElementById('scope');
-        const decSouth = decScaler.scale(incline - (90 - latitude));
-        const decNorth = decScaler.scale(90 - Math.abs(incline - latitude));
 
         if (scopeStars) {
             scopeStars.remove();
@@ -124,18 +123,20 @@ function plot(csv) {
         document.getElementById('scope').appendChild(scopeStars);
 
         for (const star of stars) {
-            const dot = document.createElementNS(svgns, 'circle');
-            const x = 40;
-            const y = 40;
-            const mag = 6.5;
+            const [ra, dec, mag] = star;
 
-            dot.setAttributeNS(null, 'cx', x);
-            dot.setAttributeNS(null, 'cy', y);
-            dot.setAttributeNS(null, 'r', 0.25);
-            dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
-                (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
-            scopeStars.appendChild(dot);
-            break;
+            if (Math.abs(ra - lst) < 0.5 && Math.abs(dec)) {
+                const dot = document.createElementNS(svgns, 'circle');
+                const x = 40;
+                const y = 40;
+
+                dot.setAttributeNS(null, 'cx', x);
+                dot.setAttributeNS(null, 'cy', y);
+                dot.setAttributeNS(null, 'r', 0.25);
+                dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
+                    (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
+                scopeStars.appendChild(dot);
+            }
         }
     }
 
@@ -173,15 +174,13 @@ function plot(csv) {
     const interval = setInterval(() => {
         if (deviceEnabled) {
             window.addEventListener('deviceorientation', e => {
-                incline = e.beta + (Math.abs(e.beta) < 5 ? 90 : 0);
+                const incline = e.beta + (Math.abs(e.beta) < 5 ? 90 : 0);
 
-                const decSouth = decScaler.scale(incline - (90 - latitude));
-
+                decSouth = decScaler.scale(incline - (90 - latitude));
                 inclineSouth.setAttribute('y1', decSouth);
                 inclineSouth.setAttribute('y2', decSouth);
 
-                const decNorth = decScaler.scale(90 - Math.abs(incline - latitude));
-
+                decNorth = decScaler.scale(90 - Math.abs(incline - latitude));
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
                 redrawScope();
