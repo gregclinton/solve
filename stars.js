@@ -53,15 +53,15 @@ class Scaler {
 const stars = [];
 
 function redrawScope() {
-    const scope = document.getElementById('scope-circle');
+    const scope = document.getElementById('scope');
     const dot = document.createElementNS(svgns, 'circle');
-    const x = 20;
-    const y = 20;
-    const mag = 0.5;
+    const x = 40;
+    const y = 40;
+    const mag = 6.5;
 
     dot.setAttributeNS(null, 'cx', x);
     dot.setAttributeNS(null, 'cy', y);
-    dot.setAttributeNS(null, 'r', 5);
+    dot.setAttributeNS(null, 'r', 0.25);
     dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
         (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
     scope.appendChild(dot);
