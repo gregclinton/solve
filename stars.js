@@ -87,7 +87,6 @@ function plot(csv, svg) {
 
     // draw meridian and inclines
     const meridian = vline(svg, 0, '#555');
-    const scope = vline(svg, 0, '#00a');
 
     const inclineSouth = hline(svg, 0, '#555');
     const inclineNorth = hline(svg, 0, '#555');
@@ -152,11 +151,6 @@ function plot(csv, svg) {
 
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
-
-                const direction = raScaler.scale((lst + (e.alpha - 90)) % 360);
-
-                scope.setAttribute('x1', direction);
-                scope.setAttribute('x2', direction);
             });
 
             clearInterval(interval);
