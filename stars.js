@@ -139,8 +139,6 @@ function plot(csv) {
         }
     }
 
-    redrawScope();
-
     // update meridian
     setInterval(() => {
         // http://www.jgiesen.de/astro/astroJS/siderealClock/sidClock.js
@@ -168,7 +166,8 @@ function plot(csv) {
 
         meridian.setAttribute('x1', x);
         meridian.setAttribute('x2', x);
-    }, 10000);
+        redrawScope();
+    }, 1000);
 
     // update inclines
     const interval = setInterval(() => {
@@ -185,6 +184,7 @@ function plot(csv) {
 
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
+                redrawScope();
             });
 
             clearInterval(interval);
