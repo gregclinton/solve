@@ -2,6 +2,12 @@ let longitude = 0;
 let latitude = 0;
 let deviceEnabled = false;
 
+const modeMap = 1;
+const modeScope = 2;
+const modeBlack = 3;
+
+let mode = modeMap;
+
 function enableDevice() {
     if (!deviceEnabled) {
         DeviceOrientationEvent.requestPermission().then(() => {
@@ -11,6 +17,12 @@ function enableDevice() {
                 deviceEnabled = true;
             })
         });
+    } else if (mode === modeMap) {
+        document.getElementById('stars').style.display = "none";
+        mode = modeBlack; 
+    } else if (mode === modeBlack) {
+        document.getElementById('stars').style.display = "block";
+        mode = modeMap; 
     }
 }
 
