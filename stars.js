@@ -9,7 +9,7 @@ const modeBlack = 3;
 let mode = modeMap;
 
 function enableDevice() {
-    if (!deviceEnabled) {
+    if (deviceEnabled) {
         DeviceOrientationEvent.requestPermission().then(() => {
             navigator.geolocation.getCurrentPosition(position => {
                 longitude = position.coords.longitude;
@@ -19,6 +19,10 @@ function enableDevice() {
         });
     } else if (mode === modeMap) {
         document.getElementById('stars').style.display = "none";
+        document.getElementById('scope').style.display = "block";
+        mode = modeScope; 
+    } else if (mode === modeScope) {
+        document.getElementById('scope').style.display = "none";
         mode = modeBlack; 
     } else if (mode === modeBlack) {
         document.getElementById('stars').style.display = "block";
