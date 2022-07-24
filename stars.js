@@ -151,8 +151,6 @@ function plot(csv, svg) {
 
                 inclineNorth.setAttribute('y1', decNorth);
                 inclineNorth.setAttribute('y2', decNorth);
-
-                document.getElementById('incline').innerHTML = '' + (Math.round(e.beta * 10) / 10);
             });
 
             clearInterval(interval);
