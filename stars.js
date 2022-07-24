@@ -125,7 +125,7 @@ function plot(csv) {
         for (const star of stars) {
             const [ra, dec, mag] = star;
 
-            if (Math.abs(ra - lst) < 0.5 && Math.abs(dec)) {
+            if (Math.abs(ra - lst) < 0.5 && Math.abs(dec - decSouth) < 0.5) {
                 const dot = document.createElementNS(svgns, 'circle');
                 const x = 40;
                 const y = 40;
