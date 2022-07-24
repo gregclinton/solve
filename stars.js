@@ -120,7 +120,7 @@ function plot(csv) {
         scopeStars = document.createElementNS(svgns, 'g');
         document.getElementById('scope').appendChild(scopeStars);
         const size = 80;
-        const scale = x => size / 2  + x;
+        const scale = x => size / 2 + x;
 
         for (const star of stars) {
             const [ra, dec, mag] = star;
