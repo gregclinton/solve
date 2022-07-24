@@ -2,14 +2,13 @@ let longitude = 0;
 let latitude = 0;
 let deviceEnabled = false;
 
-const modeMap = 1;
+const modeAtlas = 1;
 const modeScope = 2;
-const modeBlack = 3;
 
-let mode = modeMap;
+let mode = modeAtlas;
 
 function enableDevice() {
-    if (deviceEnabled) {
+    if (!deviceEnabled) {
         DeviceOrientationEvent.requestPermission().then(() => {
             navigator.geolocation.getCurrentPosition(position => {
                 longitude = position.coords.longitude;
@@ -17,16 +16,14 @@ function enableDevice() {
                 deviceEnabled = true;
             })
         });
-    } else if (mode === modeMap) {
-        document.getElementById('stars').style.display = "none";
+    } else if (mode === modeAtlas) {
+        document.getElementById('atlas').style.display = "none";
         document.getElementById('scope').style.display = "block";
-        mode = modeScope; 
+        mode = modeScope;
     } else if (mode === modeScope) {
+        document.getElementById('atlas').style.display = "block";
         document.getElementById('scope').style.display = "none";
-        mode = modeBlack; 
-    } else if (mode === modeBlack) {
-        document.getElementById('stars').style.display = "block";
-        mode = modeMap; 
+        mode = modeAtlas;
     }
 }
 
@@ -66,8 +63,25 @@ class Scaler {
     }
 }
 
-function plot(csv, svg) {
-    const stars = [];
+const stars = [];
+
+function redrawScope() {
+    const scope = document.getElementById('scope-circle');
+    const dot = document.createElementNS(svgns, 'circle');
+    const x = 20;
+    const y = 20;
+    const mag = 0.5;
+
+    dot.setAttributeNS(null, 'cx', x);
+    dot.setAttributeNS(null, 'cy', y);
+    dot.setAttributeNS(null, 'r', 0.5);
+    dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
+        (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
+    scope.appendChild(dot);
+}
+
+function plot(csv) {
+    const svg = document.getElementById('atlas')
     const height = svg.getAttribute('height');
     const width = svg.getAttribute('width');
     const raScaler = new Scaler(width);
@@ -123,6 +137,8 @@ function plot(csv, svg) {
     }
 
     let lst = 0;
+
+    redrawScope();
 
     // update meridian
     setInterval(() => {
@@ -12183,4 +12199,4 @@ plot(`
 20.85396862,20.4689899,6.0764
 21.59817582,20.07090163,6.6001
 24.65520332,21.39823153,6.807
-`, document.getElementById('stars'));
+`);
