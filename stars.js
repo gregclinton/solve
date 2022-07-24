@@ -2,11 +2,6 @@ let longitude = 0;
 let latitude = 0;
 let deviceEnabled = false;
 
-const modeAtlas = 1;
-const modeScope = 2;
-
-let mode = modeAtlas;
-
 function enableDevice() {
     if (!deviceEnabled) {
         DeviceOrientationEvent.requestPermission().then(() => {
@@ -16,14 +11,6 @@ function enableDevice() {
                 deviceEnabled = true;
             })
         });
-    } else if (mode === modeAtlas) {
-        document.getElementById('atlas').style.display = "none";
-        document.getElementById('scope').style.display = "block";
-        mode = modeScope;
-    } else if (mode === modeScope) {
-        document.getElementById('atlas').style.display = "block";
-        document.getElementById('scope').style.display = "none";
-        mode = modeAtlas;
     }
 }
 
@@ -74,7 +61,7 @@ function redrawScope() {
 
     dot.setAttributeNS(null, 'cx', x);
     dot.setAttributeNS(null, 'cy', y);
-    dot.setAttributeNS(null, 'r', 0.5);
+    dot.setAttributeNS(null, 'r', 5);
     dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
         (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
     scope.appendChild(dot);
