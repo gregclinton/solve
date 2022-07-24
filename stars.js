@@ -121,14 +121,18 @@ function plot(csv) {
 
         scopeStars = document.createElementNS(svgns, 'g');
         document.getElementById('scope').appendChild(scopeStars);
-
+        const height = 80;
+        const width = 80;
+        const raScaler = new Scaler(width);
+        const decScaler = new Scaler(height);
+    
         for (const star of stars) {
             const [ra, dec, mag] = star;
 
             if (Math.abs(ra - lst) < 0.5 && Math.abs(dec - decSouth) < 0.5) {
                 const dot = document.createElementNS(svgns, 'circle');
-                const x = 40;
-                const y = 40;
+                const x = ra - lst;
+                const y = dec - decSouth;
 
                 dot.setAttributeNS(null, 'cx', x);
                 dot.setAttributeNS(null, 'cy', y);
