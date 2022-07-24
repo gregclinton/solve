@@ -131,8 +131,8 @@ function plot(csv) {
 
             if (Math.abs(ra - lst) < 0.5 && Math.abs(dec - decSouth) < 0.5) {
                 const dot = document.createElementNS(svgns, 'circle');
-                const x = ra - lst;
-                const y = dec - decSouth;
+                const x = 40 + ra - lst;
+                const y = 40 + dec - decSouth;
 
                 dot.setAttributeNS(null, 'cx', x);
                 dot.setAttributeNS(null, 'cy', y);
