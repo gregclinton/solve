@@ -50,7 +50,7 @@ class Scaler {
     }
 }
 
-function plot(csv) {
+function plot(csvStars, messierFlat) {
     const stars = [];
     const svg = document.getElementById('stars')
     const height = svg.getAttribute('height');
@@ -68,7 +68,7 @@ function plot(csv) {
         return line(e, 0, y, width, y, color);
     };
 
-    for (const row of csv.trim().split('\n')) {
+    for (const row of csvStars.trim().split('\n')) {
         const star = row.trim().split(',');
         const [ra, dec, mag, name] = star;
 
@@ -76,6 +76,8 @@ function plot(csv) {
         decScaler.scan(dec);
         stars.push(star);
     }
+
+    const messiers = messierFlat.trim().split('\n').map(row => row.trim().split(' '));
 
     // draw grid
     for (let minute = 0; minute < 1440; minute++) {
@@ -101,6 +103,19 @@ function plot(csv) {
         dot.setAttributeNS(null, 'r', 0.5);
         dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
             (mag < 1 ? 'faa' : mag < 2 ? 'f44' : mag < 3 ? 'f00' : mag < 4 ? 'a00' : mag < 5 ? '800' : mag < 6 ? '600' : '400'));
+        svg.appendChild(dot);
+    }
+
+    // draw messiers
+    for (const messier of messiers) {
+        const [name, ra, decWhole, decMinute, mag] = messier;
+        const dec = parseFloat(decWhole + '.' + ('' + (decMinute / 60)).substring(2));
+        const dot = document.createElementNS(svgns, 'circle');
+
+        dot.setAttributeNS(null, 'cx', raScaler.scale(ra));
+        dot.setAttributeNS(null, 'cy',  decScaler.scale(dec));
+        dot.setAttributeNS(null, 'r', 0.5);
+        dot.setAttributeNS(null, 'style', 'stroke: none; fill: #660');
         svg.appendChild(dot);
     }
 
@@ -12162,4 +12177,117 @@ plot(`
 20.85396862,20.4689899,6.0764
 21.59817582,20.07090163,6.6001
 24.65520332,21.39823153,6.807
-`);
+`,
+// http://messier.obspm.fr/dataRA.html
+`
+M110 40.4 +41 41 8.5
+ M31 42.7 +41 16 3.4
+ M32 42.7 +40 52 8.1
+M103 33.2 +60 42 7.4
+ M33 33.9 +30 39 5.7
+ M74 36.7 +15 47 9.4
+ M76 42.4 +51 34 10.1
+ M34 42.0 +42 47 5.5
+ M77 42.7 -00 01 8.9
+ M45 47.0 +24 07 1.6
+ M79 24.5 -24 33 7.7
+ M38 28.4 +35 50 7.4
+ M1 34.5 +22 01 8.4
+ M42 35.4 -05 27 4.0
+ M43 35.6 -05 16 9.0
+ M36 36.1 +34 08 6.3
+ M78 46.7 +00 03 8.3
+ M37 52.4 +32 33 6.2
+ M35 08.9 +24 20 5.3
+ M41 46.0 -20 44 4.6
+ M50 03.2 -08 20 6.3
+ M47 36.6 -14 30 5.2
+ M46 41.8 -14 49 6.0
+ M93 44.6 -23 52 6.0
+ M48 13.8 -05 48 5.5
+ M44 40.1 +19 59 3.7
+ M67 50.4 +11 49 6.1
+ M81 55.6 +69 04 6.9
+ M82 55.8 +69 41 8.4
+ M95 44.0 +11 42 9.7
+ M96 46.8 +11 49 9.2
+M105 47.8 +12 35 9.3
+M108 11.5 +55 40 10.0
+ M97 14.8 +55 01 9.9
+ M65 18.9 +13 05 9.3
+ M66 20.2 +12 59 8.9
+M109 57.6 +53 23 9.8
+ M98 13.8 +14 54 10.1
+ M99 18.8 +14 25 9.9
+M106 19.0 +47 18 8.4
+ M61 21.9 +04 28 9.7
+ M40 22.4 +58 05 8.4
+M100 22.9 +15 49 9.3
+ M84 25.1 +12 53 9.1
+ M85 25.4 +18 11 9.1
+ M86 26.2 +12 57 8.9
+ M49 29.8 +08 00 8.4
+ M87 30.8 +12 24 8.6
+ M88 32.0 +14 25 9.6
+ M91 35.4 +14 30 10.2
+ M89 35.7 +12 33 9.8
+ M90 36.8 +13 10 9.5
+ M58 37.7 +11 49 9.7
+ M68 39.5 -26 45 7.8
+M104 40.0 -11 37 8.0
+ M59 42.0 +11 39 9.6
+ M60 43.7 +11 33 8.8
+ M94 50.9 +41 07 8.2
+ M64 56.7 +21 41 8.5
+ M53 12.9 +18 10 7.6
+ M63 15.8 +42 02 8.6
+ M51 29.9 +47 12 8.4
+ M83 37.0 -29 52 7.6
+ M3 42.2 +28 23 6.2
+M101 03.2 +54 21 7.9
+M102?06.5 +55 46 9.9
+ M5 18.6 +02 05 5.6
+ M80 17.0 -22 59 7.3
+ M4 23.6 -26 32 5.6
+M107 32.5 -13 03 7.9
+ M13 41.7 +36 28 5.8
+ M12 47.2 -01 57 6.7
+ M10 57.1 -04 06 6.6
+ M62 01.2 -30 07 6.5
+ M19 02.6 -26 16 6.8
+ M92 17.1 +43 08 6.4
+ M9 19.2 -18 31 7.7
+ M14 37.6 -03 15 7.6
+ M6 40.1 -32 13 4.2
+ M7 53.9 -34 49 3.3
+ M23 56.8 -19 01 6.9
+ M20 02.6 -23 02 9.0
+ M8 03.8 -24 23 6.0
+ M18 19.9 -17 08 7.5
+ M21 04.6 -22 30 6.5
+ M24 16.9 -18 29 4.6
+ M16 18.8 -13 47 6.4
+ M17 20.8 -16 11 7.0
+ M28 24.5 -24 52 6.8
+ M69 31.4 -32 21 7.6
+ M25 31.6 -19 15 6.5
+ M22 36.4 -23 54 5.1
+ M70 43.2 -32 18 7.9
+ M26 45.2 -09 24 8.0
+ M11 51.1 -06 16 6.3
+ M57 53.6 +33 02 8.8
+ M54 55.1 -30 29 7.6
+ M56 16.6 +30 11 8.3
+ M55 40.0 -30 58 6.3
+ M71 53.8 +18 47 8.2
+ M27 59.6 +22 43 7.4
+ M75 06.1 -21 55 8.5
+ M29 23.9 +38 32 7.1
+ M72 53.5 -12 32 9.3
+ M73 58.9 -12 38 9.0
+ M15 30.0 +12 10 6.2
+ M39 32.2 +48 26 4.6
+ M2 33.5 -00 49 6.5
+ M30 40.4 -23 11 7.2
+ M52 24.2 +61 35 7.3
+ `);
