@@ -1,4 +1,4 @@
-let longitude = -117.64;
+let longitude = 0;
 let latitude = 0;
 let deviceEnabled = false;
 
@@ -52,7 +52,7 @@ class Scaler {
 
 function plot(csv) {
     const stars = [];
-    const svg = document.getElementById('atlas')
+    const svg = document.getElementById('stars')
     const height = svg.getAttribute('height');
     const width = svg.getAttribute('width');
     const raScaler = new Scaler(width);
@@ -106,36 +106,6 @@ function plot(csv) {
     }
 
     let lst = 0;
-    let decSouth = 0;
-    let decNorth = 0;
-    let scopeStars = false;
-    let lane = [];
-
-    function redrawScope() {
-        if (scopeStars) {
-            scopeStars.remove();
-        }
-
-        scopeStars = document.createElementNS(svgns, 'g');
-        document.getElementById('scope').appendChild(scopeStars);
-        const size = 80;
-        const scale = x => size / 2 + x * size;
-
-        for (const star of lane) {
-            const [ra, dec, mag] = star;
-
-            if (Math.abs(dec - decSouth) < 0.5) {
-                const dot = document.createElementNS(svgns, 'circle');
-
-                dot.setAttributeNS(null, 'cx', scale(ra - lst));
-                dot.setAttributeNS(null, 'cy', scale(dec - decSouth));
-                dot.setAttributeNS(null, 'r', 0.25);
-                dot.setAttributeNS(null, 'style', 'stroke: none; fill: #' +
-                    (mag < 1 ? 'fff' : mag < 2 ? 'ddd' : mag < 3 ? 'bbb' : mag < 4 ? '999' : mag < 5 ? '777' : mag < 6 ? '555' : '444'));
-                scopeStars.appendChild(dot);
-            }
-        }
-    }
 
     // update meridian
     setInterval(() => {
@@ -164,7 +134,6 @@ function plot(csv) {
 
         meridian.setAttribute('x1', x);
         meridian.setAttribute('x2', x);
-        redrawScope();
     }, 1000);
 
     // update inclines
@@ -173,27 +142,21 @@ function plot(csv) {
             window.addEventListener('deviceorientation', e => {
                 const incline = e.beta + (Math.abs(e.beta) < 5 ? 90 : 0);
 
-                decSouth = incline - (90 - latitude);
-                let y = decScaler.scale(decSouth);
+                const decSouth = incline - (90 - latitude);
+                const ySouth = decScaler.scale(decSouth);
 
-                inclineSouth.setAttribute('y1', y);
-                inclineSouth.setAttribute('y2', y);
+                inclineSouth.setAttribute('y1', ySouth);
+                inclineSouth.setAttribute('y2', ySouth);
 
-                decNorth = 90 - Math.abs(incline - latitude);
-                y = decScaler.scale(decNorth);
-                inclineNorth.setAttribute('y1', y);
-                inclineNorth.setAttribute('y2', y);
-                redrawScope();
+                const decNorth = 90 - Math.abs(incline - latitude);
+                const yNorth = decScaler.scale(decNorth);
+                inclineNorth.setAttribute('y1', yNorth);
+                inclineNorth.setAttribute('y2', yNorth);
             });
 
             clearInterval(interval);
         }
     }, 1000);
-
-    // update lane
-    setInterval(() => {
-        lane = stars.filter(star => Math.abs(star[0] - lst) < 0.5);
-    }, 10000);
 }
 
 /*
