@@ -189,15 +189,7 @@ function plot(csv) {
 
     // update lane
     setInterval(() => {
-        lane = [];
-
-        for (const star of stars) {
-            const [ra] = star;
-
-            if (Math.abs(ra - lst) < 0.5) {
-                lane.push(star);
-            }
-        }
+        lane = stars.filter(star => Math.abs(star[0] - lst) < 0.5);
     }, 10000);
 }
 
