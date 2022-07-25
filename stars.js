@@ -173,13 +173,16 @@ function plot(csv) {
             window.addEventListener('deviceorientation', e => {
                 const incline = e.beta + (Math.abs(e.beta) < 5 ? 90 : 0);
 
-                decSouth = decScaler.scale(incline - (90 - latitude));
-                inclineSouth.setAttribute('y1', decSouth);
-                inclineSouth.setAttribute('y2', decSouth);
+                decSouth = incline - (90 - latitude);
+                let y = decScaler.scale(decSouth);
 
-                decNorth = decScaler.scale(90 - Math.abs(incline - latitude));
-                inclineNorth.setAttribute('y1', decNorth);
-                inclineNorth.setAttribute('y2', decNorth);
+                inclineSouth.setAttribute('y1', y);
+                inclineSouth.setAttribute('y2', y);
+
+                decNorth = 90 - Math.abs(incline - latitude);
+                y = decScaler.scale(decNorth);
+                inclineNorth.setAttribute('y1', y);
+                inclineNorth.setAttribute('y2', y);
                 redrawScope();
             });
 
