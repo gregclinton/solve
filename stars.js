@@ -88,7 +88,6 @@ function plot(csv) {
 
     // draw meridian and inclines
     const meridian = vline(svg, 0, '#555');
-
     const inclineSouth = hline(svg, 0, '#555');
     const inclineNorth = hline(svg, 0, '#555');
 
@@ -104,8 +103,6 @@ function plot(csv) {
             (mag < 1 ? 'faa' : mag < 2 ? 'f44' : mag < 3 ? 'f00' : mag < 4 ? 'a00' : mag < 5 ? '800' : mag < 6 ? '600' : '400'));
         svg.appendChild(dot);
     }
-
-    let lst = 0;
 
     // update meridian
     setInterval(() => {
@@ -127,10 +124,7 @@ function plot(csv) {
         const jd0 = floor(jd);
         const eph  = (jd0 - 51544.5) / 36525.0;
         const gst =  6.697374558 + 1.0027379093 * (jd - jd0) * 24.0 + (8640184.812866 + (0.093104 - 0.0000062 * eph) * eph) * eph / 3600.0;
-
-        lst = (gst * 15 + longitude) % 360;
-
-        const x = raScaler.scale(lst);
+        const x = raScaler.scale((gst * 15 + longitude) % 360);
 
         meridian.setAttribute('x1', x);
         meridian.setAttribute('x2', x);
