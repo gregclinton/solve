@@ -1,4 +1,4 @@
-let longitude = 0;
+let longitude = -117.64;
 let latitude = 0;
 let deviceEnabled = false;
 
