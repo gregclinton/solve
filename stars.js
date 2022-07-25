@@ -112,8 +112,6 @@ function plot(csv) {
     let lane = [];
 
     function redrawScope() {
-        const scope = document.getElementById('scope');
-
         if (scopeStars) {
             scopeStars.remove();
         }
