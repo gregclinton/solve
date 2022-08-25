@@ -9,7 +9,7 @@ function test()
     x = zeros(Float32, n)
 
     for _ in 1 : 1000 
-        val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
+#        val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
         grad = A' * (1 ./ (1 .- A * x)) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
         if norm(grad) < 1e-3
             break
