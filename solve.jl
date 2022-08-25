@@ -9,13 +9,8 @@ let
     Random.seed!(1234)
     A = randn(Float32, (200, n))
 
-    function f(x)
-        -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
-    end
-
-    function g(x)
-        3
-    end
+    f(x) = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
+    g(x) = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
 end
 
 function test()
