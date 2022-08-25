@@ -7,4 +7,4 @@ m = 100
 A = randn(Float32, (m, n))
 b = rand(Float32, m)
 
-println(sum(b))
+println(sum(b), ' ', sum(A))
