@@ -8,12 +8,11 @@ m = 200
 A = randn(Float32, (m, n))
 
 function f(x)
-    sum(ones(Float32, m) - A * x)
+    -sum(log.(ones(Float32, m) - A * x)) - sum(log.(ones(Float32, n) - x .* x))
 end
 
 function test()
-    x0 = zeros(Float32, n)
-    println(f(x0))
+    println(f(zeros(Float32, n)))
 end
 
 test()
