@@ -1,5 +1,5 @@
 module solve
-using Random
+using Random, LinearAlgebra
 
 function test()
     n = 100
@@ -11,6 +11,10 @@ function test()
     for _ in 1 : 1000 
         val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
         grad = A' * (1 ./ (1 .- A * x)) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
+        if norm(grad) < 1e-3
+            break
+        end
+        v = -grad
     end
 end
 
