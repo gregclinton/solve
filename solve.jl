@@ -3,20 +3,24 @@ module solve
 n = 100
 
 let
-    global f
+    global f, g
     using Random
 
     Random.seed!(1234)
-    m = 200
-    A = randn(Float32, (m, n))
+    A = randn(Float32, (200, n))
 
     function f(x)
-        -sum(log.(ones(Float32, m) - A * x)) - sum(log.(ones(Float32, n) - x .* x))
+        -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
+    end
+
+    function g(x)
+        3
     end
 end
 
 function test()
-    println(f(zeros(Float32, n)))
+    x0 = zeros(Float32, n)
+    println(f(x0), ' ', g(x0))
 end
 
 test()
