@@ -10,7 +10,7 @@ function test()
 
     for _ in 1 : 1000 
         val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
-        grad = 1 ./ (1 .- A * x)
+        grad = A' * (1 ./ (1 .- A * x)) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
     end
 end
 
