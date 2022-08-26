@@ -13,7 +13,7 @@ function test()
         d = 1 ./ (1 .- A * x)
         grad = A' * d - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
         hess = A' * Diagonal(d .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
-        v = -hess\grad
+        v = -hess \ grad
         fprime = grad' * v
 
         if abs(fprime) < 1e-8
