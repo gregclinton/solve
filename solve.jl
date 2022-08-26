@@ -10,7 +10,7 @@ function test()
     β = 0.5
     for _ in 1 : 1000 
         print('.')
-        val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .* x))
+        val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .^ 2))
         grad = A' * (1 ./ (1 .- A * x)) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
         if norm(grad) < 1e-3
             print('!')
@@ -22,7 +22,7 @@ function test()
         while maximum(A * (x + t * v)) ≥ 1 || maximum(abs.(x + t * v)) ≥ 1
             t *= β
         end
-        while -sum(log.(1 .- A * (x + t * v))) - sum(log.(1 .- (x + t * v) .* (x + t * v))) > val + α * t * fprime
+        while -sum(log.(1 .- A * (x + t * v))) - sum(log.(1 .- (x + t * v) .^ 2)) > val + α * t * fprime
             t *= β
         end
         x += t * v
