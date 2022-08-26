@@ -9,11 +9,13 @@ cp mosek/10.0/tools/platform/linux64x86/bin/libtbb* /usr/local/lib/.
 rm -rf mosek
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
 
-g++ -std=c++20 -o solve mosek.cpp -lmosek64
+
+g++ -std=c++20 -o test mosek.cpp -lmosek64
 */
 
 #include <iostream>
 #include <mosek/mosek.h>
+#include <cblas.h>
 
 using namespace std;
 
