@@ -14,16 +14,14 @@ using namespace std;
 
 int main()
 {
-    cout << "blas" << endl;
-
-    mt19937 rng(1234);
-    uniform_real_distribution<double> dist;
-
     auto m = 2;
     auto n = 2;
     vector<double> A(m * n);
     vector<double> B(m * n);
     vector<double> C(m * n);
+
+    mt19937 rng(1234);
+    uniform_real_distribution<double> dist;
 
     generate(begin(A), end(A), [&rng, &dist] () { return dist(rng); });
     generate(begin(B), end(B), [&rng, &dist] () { return dist(rng); });
