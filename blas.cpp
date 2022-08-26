@@ -6,6 +6,8 @@ g++ -std=c++20 -o test blas.cpp
 
 #include <iostream>
 #include <random>
+#include <algorithm>
+#include <vector>
 #include <cblas.h>
 
 using namespace std;
@@ -16,7 +18,11 @@ int main()
 
     mt19937 rng(1234);
     uniform_real_distribution<double> dist;
-    cout << dist(rng) << endl;
+
+    vector<double> a(10);
+    generate(begin(a), end(a), [&rng, &dist] () { return dist(rng); });
+
+    cout << a[0] << endl;
 
     return 0;
 }
