@@ -5,10 +5,10 @@ function test()
     Random.seed!(1234)
     x = zeros(Float32, 100)
     A = randn(Float32, (200, length(x)))
-
     α = 0.01
     β = 0.5
-    for _ in 1 : 1000 
+
+    for _ in 1 : 1000
         print('.')
         val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .^ 2))
         grad = A' * (1 ./ (1 .- A * x)) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
