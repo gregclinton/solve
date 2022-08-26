@@ -22,7 +22,9 @@ function test()
         while maximum(A * (x + t * v)) ≥ 1 || maximum(abs.(x + t * v)) ≥ 1
             t *= β
         end
-        t = 0
+        while -sum(log.(1 .- A * (x + t * v))) - sum(log.(1 .- (x + t * v) .* (x + t * v))) > val + α * t * fprime
+            t *= β
+        end
         x += t * v
     end
 end
