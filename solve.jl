@@ -8,12 +8,11 @@ function test()
     α = 0.01
     β = 0.5
 
-    for _ in 1 : 1000
-        print('.')
+    for iters in 1 : 10000
         val = -sum(log.(1 .- A * x)) - sum(log.(1 .- x .^ 2))
         grad = A' * (1 ./ (1 .- A * x)) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
         if norm(grad) < 1e-3
-            print('!')
+            println(iters)
             break
         end
         v = -grad
