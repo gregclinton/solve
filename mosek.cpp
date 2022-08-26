@@ -1,5 +1,16 @@
-// g++ -std=c++20 -o solve mosek.cpp -lmosek64
-// export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+/*
+wget https://download.mosek.com/stable/10.0.18/mosektoolslinux64x86.tar.bz2
+tar -xf mosektoolslinux64x86.tar.bz2
+rm -f *.bz2
+mkdir /usr/local/include/mosek
+cp mosek/10.0/tools/platform/linux64x86/h/* /usr/local/include/mosek/.
+cp mosek/10.0/tools/platform/linux64x86/bin/libmosek* /usr/local/lib/.
+cp mosek/10.0/tools/platform/linux64x86/bin/libtbb* /usr/local/lib/.
+rm -rf mosek
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+
+g++ -std=c++20 -o solve mosek.cpp -lmosek64
+*/
 
 #include <iostream>
 #include <mosek/mosek.h>
