@@ -14,11 +14,9 @@ int main()
 {
     cout << "blas" << endl;
 
-    random_device dev;
-    mt19937 rng(dev());
-
-    uniform_int_distribution<mt19937::result_type> dist6(1,6);
-    cout << dist6(rng) << endl;
+    mt19937 rng(1234);
+    uniform_real_distribution<double> dist;
+    cout << dist(rng) << endl;
 
     return 0;
 }
