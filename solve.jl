@@ -30,6 +30,7 @@ function test()
         while -sum(log.(1 .- A * (x + t * v))) - sum(log.(1 .- (x + t * v) .^ 2)) > val + α * t * fprime
             t *= β
         end
+
         x += t * v
     end
 end
