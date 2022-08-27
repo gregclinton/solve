@@ -1,11 +1,11 @@
 module solve
 using Random, LinearAlgebra
 
-function backtrack(f, x, Δxₙₜ, f′, α = 0.01, β = 0.5)
+function backtrack(f, x, Δx, f′, α = 0.01, β = 0.5)
     val = f(x)
     t = 1.0
 
-    while f(x + t * Δxₙₜ) > val + α * t * f′
+    while f(x + t * Δx) > val + α * t * f′
         t *= β
     end
 
@@ -17,14 +17,14 @@ function newton(f, ∇f, ∇²f, x₀)
 
     for iters in 1 : 10000
         g = ∇f(x);
-        Δxₙₜ = -(∇²f(x) \ g)
-        f′ = g'Δxₙₜ
+        Δx = -(∇²f(x) \ g)
+        f′ = g'Δx
 
         if abs(f′) < 1e-8
             break
         end
 
-        x += backtrack(f, x, Δxₙₜ, f′) * Δxₙₜ
+        x += backtrack(f, x, Δx, f′) * Δx
     end
 
     x
