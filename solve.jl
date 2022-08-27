@@ -1,30 +1,32 @@
 module solve
 using Random, LinearAlgebra
 
-function backtrack(f, f′, x, Δx, α = 0.01, β = 0.5)
-    val = f(x)
+function backtrack(f, f̃, f′, α = 0.01, β = 0.5)
     t = 1.0
 
-    while f(x + t * Δx) > val + α * t * f′
+    while f̃(t) > f + α * t * f′
         t *= β
     end
 
     t
 end
 
-function newton(f, ∇f, ∇²f, x₀, maxiters = 1000, ε = 1e-8)
+function Δxₙₜ(∇f, ∇²f)
+    -(∇²f \ ∇f)
+end
+
+function newton(gen, x₀, maxiters = 1000, ε = 1e-8)
     x = x₀
 
     for iters in 1 : maxiters
-        g = ∇f(x);
-        Δx = -(∇²f(x) \ g)
-        f′ = g'Δx
+        f, ∇f, ∇²f, f̃, Δx = gen(x)
+        f′ = ∇f'Δx
 
         if abs(f′) < ε
             break
         end
 
-        x += backtrack(f, f′, x, Δx) * Δx
+        x += backtrack(f, f̃, f′) * Δx
     end
 
     x
@@ -34,18 +36,27 @@ function test()
     Random.seed!(1234)
     A = randn(Float32, (200, 100))
 
-    function f(x)
-        if maximum(abs.(x)) < 1
+    function gen(x)
+
+        function f(x)
             Ax = A * x
-            return maximum(Ax) < 1 ? -sum(log.(1 .- Ax)) - sum(log.(1 .+ x)) - sum(log.(1 .- x)) : Inf
+
+            if maximum(abs.(x)) < 1
+                return maximum(Ax) < 1 ? -sum(log.(1 .- Ax)) - sum(log.(1 .+ x)) - sum(log.(1 .- x)) : Inf
+            end
+
+            Inf
         end
-        Inf
+
+        d = 1 ./ (1 .- A * x)
+        ∇f = A'd - 1 ./ (1 .+ x) + 1 ./ (1 .- x) 
+        ∇²f = A'Diagonal(d .^ 2)A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
+        Δx = Δxₙₜ(∇f, ∇²f) 
+        f̃(t) = f(x + t * Δx)
+        f(x), ∇f, ∇²f, f̃, Δx
     end
 
-    d(x) = 1 ./ (1 .- A * x)
-    ∇f(x) = A' * d(x) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
-    ∇²f(x) = A' * Diagonal(d(x) .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
-    println(newton(f, ∇f, ∇²f, zeros(Float32, size(A)[2]))[1])
+    println(newton(gen, zeros(Float32, size(A)[2]))[1])
 end
 
 test()
