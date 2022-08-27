@@ -1,11 +1,11 @@
 module solve
 using Random, LinearAlgebra
 
-function newton(f, fable, grad, hess, x)
+function newton(f, fable, ∇f, hess, x)
     for iters in 1 : 10000
         val = f(x)
         H = hess(x)
-        g = grad(x);
+        g = ∇f(x);
         v = -(H \ g)
         fprime = g' * v
 
