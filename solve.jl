@@ -35,23 +35,23 @@ function test()
     A = randn(Float32, (200, 100))
 
     function gen(x)
-
-        function f(x)
-            Ax = A * x
-
-            if maximum(abs.(x)) < 1
-                return maximum(Ax) < 1 ? -sum(log.(1 .- Ax)) - sum(log.(1 .+ x)) - sum(log.(1 .- x)) : Inf
-            end
-
-            Inf
-        end
-
         d = 1 ./ (1 .- A * x)
         ∇f = A'd - 1 ./ (1 .+ x) + 1 ./ (1 .- x) 
         ∇²f = A'Diagonal(d .^ 2)A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
         Δx = Δxₙₜ(∇f, ∇²f) 
-        f̃(t) = f(x + t * Δx)
-        f(x), ∇f, f̃, Δx
+
+        function f̃(t)
+            z = x + t * Δx 
+            Ax = A * z
+
+            if maximum(abs.(z)) < 1
+                return maximum(Ax) < 1 ? -sum(log.(1 .- Ax)) - sum(log.(1 .+ z)) - sum(log.(1 .- z)) : Inf
+            end
+
+            Inf
+        end    
+
+        f̃(0), ∇f, f̃, Δx
     end
 
     println(newton(gen, zeros(Float32, size(A)[2]))[1])
