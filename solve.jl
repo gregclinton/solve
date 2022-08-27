@@ -1,7 +1,7 @@
 module solve
 using Random, LinearAlgebra
 
-function backtrack(f, x, Δx, f′, α = 0.01, β = 0.5)
+function backtrack(f, f′, x, Δx, α = 0.01, β = 0.5)
     val = f(x)
     t = 1.0
 
@@ -24,7 +24,7 @@ function newton(f, ∇f, ∇²f, x₀)
             break
         end
 
-        x += backtrack(f, x, Δx, f′) * Δx
+        x += backtrack(f, f′, x, Δx) * Δx
     end
 
     x
