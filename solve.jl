@@ -1,13 +1,13 @@
 module solve
 using Random, LinearAlgebra
 
-function newton(f, fable, ∇f, hess, x)
+function newton(f, ∇f, ∇²f, x₀)
     for iters in 1 : 10000
+        x = x₀
         val = f(x)
-        H = hess(x)
         g = ∇f(x);
-        v = -(H \ g)
-        fprime = g' * v
+        Δxₙₜ = -(∇²f(x) \ g)
+        fprime = g' * Δxₙₜ
 
         if abs(fprime) < 1e-8
             println(iters)
@@ -17,25 +17,23 @@ function newton(f, fable, ∇f, hess, x)
         t = 1.0
         α = 0.01
         β = 0.5
-    
-        while !fable(x + t * v) || f(x + t * v) > val + α * t * fprime
+
+        while f(x + t * Δxₙₜ) > val + α * t * fprime
             t *= β
         end
 
-        x += t * v
+        x += t * Δxₙₜ
     end
 end
 
 function test()
     Random.seed!(1234)
-    x = zeros(Float32, 100)
-    A = randn(Float32, (200, length(x)))
-    f(x) = -sum(log.(1 .- A * x)) - sum(log.(1 .+ x)) - sum(log.(1 .- x))
-    fable(x) = maximum(A * (x)) < 1 && maximum(abs.(x)) < 1
+    A = randn(Float32, (200, 100))
+    f(x) = (maximum(A * (x)) < 1 && maximum(abs.(x)) < 1) ? -sum(log.(1 .- A * x)) - sum(log.(1 .+ x)) - sum(log.(1 .- x)) : Inf
     d(x) = 1 ./ (1 .- A * x)
-    grad(x) = A' * d(x) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
-    hess(x) = A' * Diagonal(d(x) .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
-newton(f, fable, grad, hess, x)
+    ∇f(x) = A' * d(x) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
+    ∇²f(x) = A' * Diagonal(d(x) .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
+    newton(f, ∇f, ∇²f, zeros(Float32, size(A)[2]))
 end
 
 test()
