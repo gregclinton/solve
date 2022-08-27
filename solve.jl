@@ -2,9 +2,6 @@ module solve
 using Random, LinearAlgebra
 
 function newton(f, fable, grad, hess, x)
-    α = 0.01
-    β = 0.5
-
     for iters in 1 : 10000
         val = f(x)
         H = hess(x)
@@ -17,8 +14,10 @@ function newton(f, fable, grad, hess, x)
             break
         end
 
-        t = 1
-
+        t = 1.0
+        α = 0.01
+        β = 0.5
+    
         while !fable(x + t * v) || f(x + t * v) > val + α * t * fprime
             t *= β
         end
