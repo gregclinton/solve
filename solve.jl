@@ -33,7 +33,15 @@ end
 function test()
     Random.seed!(1234)
     A = randn(Float32, (200, 100))
-    f(x) = (maximum(A * (x)) < 1 && maximum(abs.(x)) < 1) ? -sum(log.(1 .- A * x)) - sum(log.(1 .+ x)) - sum(log.(1 .- x)) : Inf
+
+    function f(x)
+        if maximum(abs.(x)) < 1
+            Ax = A * x
+            return maximum(Ax) < 1 ? -sum(log.(1 .- Ax)) - sum(log.(1 .+ x)) - sum(log.(1 .- x)) : Inf
+        end
+        Inf
+    end
+
     d(x) = 1 ./ (1 .- A * x)
     ∇f(x) = A' * d(x) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
     ∇²f(x) = A' * Diagonal(d(x) .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
