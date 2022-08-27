@@ -25,6 +25,8 @@ function newton(f, ∇f, ∇²f, x₀)
 
         x += t * Δxₙₜ
     end
+
+    x
 end
 
 function test()
@@ -34,7 +36,7 @@ function test()
     d(x) = 1 ./ (1 .- A * x)
     ∇f(x) = A' * d(x) - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
     ∇²f(x) = A' * Diagonal(d(x) .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
-    newton(f, ∇f, ∇²f, zeros(Float32, size(A)[2]))
+    println(newton(f, ∇f, ∇²f, zeros(Float32, size(A)[2]))[1])
 end
 
 test()
