@@ -22,9 +22,10 @@ int main()
 
     mt19937 rng(1234);
     uniform_real_distribution<double> dist;
+    auto gen = [&rng, &dist] () { return dist(rng); };
 
-    generate(begin(A), end(A), [&rng, &dist] () { return dist(rng); });
-    generate(begin(B), end(B), [&rng, &dist] () { return dist(rng); });
+    generate(begin(A), end(A), gen);
+    generate(begin(B), end(B), gen);
 
     cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, m, n, n, 1, &A[0], n, &B[0], n, 0, &C[0], n);
 
