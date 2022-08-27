@@ -17,7 +17,7 @@ function newton(gen, x₀, maxiters = 1000, ε = 1e-8)
     x = x₀
 
     for iters in 1 : maxiters
-        f, ∇f, ∇²f, f̃, Δx = gen(x)
+        f, ∇f, f̃, Δx = gen(x)
         f′ = ∇f'Δx
 
         if abs(f′) < ε
@@ -51,7 +51,7 @@ function test()
         ∇²f = A'Diagonal(d .^ 2)A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
         Δx = Δxₙₜ(∇f, ∇²f) 
         f̃(t) = f(x + t * Δx)
-        f(x), ∇f, ∇²f, f̃, Δx
+        f(x), ∇f, f̃, Δx
     end
 
     println(newton(gen, zeros(Float32, size(A)[2]))[1])
