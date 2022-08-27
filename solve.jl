@@ -1,7 +1,8 @@
 module solve
 using Random, LinearAlgebra
 
-function backtrack(f, f̃, f′, α = 0.01, β = 0.5)
+function backtrack(f̃, f′, α = 0.01, β = 0.5)
+    f = f̃(0)
     t = 1.0
 
     while f̃(t) > f + α * t * f′
@@ -17,14 +18,14 @@ function newton(gen, x₀, maxiters = 1000, ε = 1e-8)
     x = x₀
 
     for iters in 1 : maxiters
-        f, ∇f, f̃, Δx = gen(x)
+        f̃, ∇f, Δx = gen(x)
         f′ = ∇f'Δx
 
         if abs(f′) < ε
             break
         end
 
-        x += backtrack(f, f̃, f′) * Δx
+        x += backtrack(f̃, f′) * Δx
     end
 
     x
@@ -53,7 +54,7 @@ function test()
             Inf
         end    
 
-        f̃(0), ∇f, f̃, Δx
+        f̃, ∇f, Δx
     end
 
     println(newton(gen, zeros(Float32, size(A)[2]))[1])
