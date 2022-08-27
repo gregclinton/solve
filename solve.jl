@@ -11,9 +11,7 @@ function backtrack(f, f̃, f′, α = 0.01, β = 0.5)
     t
 end
 
-function Δxₙₜ(∇f, ∇²f)
-    -(∇²f \ ∇f)
-end
+Δxₙₜ(∇f, ∇²f) = -(∇²f \ ∇f)
 
 function newton(gen, x₀, maxiters = 1000, ε = 1e-8)
     x = x₀
