@@ -7,9 +7,9 @@ function newton(f, ∇f, ∇²f, x₀)
         val = f(x)
         g = ∇f(x);
         Δxₙₜ = -(∇²f(x) \ g)
-        fprime = g' * Δxₙₜ
+        f′ = g'Δxₙₜ
 
-        if abs(fprime) < 1e-8
+        if abs(f′) < 1e-8
             println(iters)
             break
         end
@@ -18,7 +18,7 @@ function newton(f, ∇f, ∇²f, x₀)
         α = 0.01
         β = 0.5
 
-        while f(x + t * Δxₙₜ) > val + α * t * fprime
+        while f(x + t * Δxₙₜ) > val + α * t * f′
             t *= β
         end
 
