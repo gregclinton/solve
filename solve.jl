@@ -2,8 +2,9 @@ module solve
 using Random, LinearAlgebra
 
 function newton(f, ∇f, ∇²f, x₀)
+    x = x₀
+
     for iters in 1 : 10000
-        x = x₀
         val = f(x)
         g = ∇f(x);
         Δxₙₜ = -(∇²f(x) \ g)
