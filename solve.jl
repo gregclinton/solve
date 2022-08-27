@@ -36,11 +36,11 @@ function test()
     A = randn(Float32, (200, 100))
 
     function gen(x)
-        d = 1 ./ (1 .- A * x)
+        Ax = A * x
+        d = 1 ./ (1 .- Ax)
         ∇f = A'd - 1 ./ (1 .+ x) + 1 ./ (1 .- x) 
         ∇²f = A'Diagonal(d .^ 2)A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
         Δx = Δxₙₜ(∇f, ∇²f)
-        Ax = A * x
         AΔx = A * Δx
 
         function f̃(t)
