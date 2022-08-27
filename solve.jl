@@ -7,9 +7,10 @@ function test()
     A = randn(Float32, (200, length(x)))
     α = 0.01
     β = 0.5
+    f(x) = -sum(log.(1 .- A * x)) - sum(log.(1 .+ x)) - sum(log.(1 .- x))
 
     for iters in 1 : 10000
-        val = -sum(log.(1 .- A * x)) - sum(log.(1 .+ x)) - sum(log.(1 .- x))
+        val = f(x)
         d = 1 ./ (1 .- A * x)
         grad = A' * d - 1 ./ (1 .+ x) + 1 ./ (1 .- x)
         hess = A' * Diagonal(d .^ 2) * A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
@@ -27,7 +28,7 @@ function test()
             t *= β
         end
 
-        while -sum(log.(1 .- A * (x + t * v))) - sum(log.(1 .- (x + t * v) .^ 2)) > val + α * t * fprime
+        while f(x + t * v) > val + α * t * fprime
             t *= β
         end
 
