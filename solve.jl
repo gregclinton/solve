@@ -8,6 +8,7 @@ function test()
     α = 0.01
     β = 0.5
     f(x) = -sum(log.(1 .- A * x)) - sum(log.(1 .+ x)) - sum(log.(1 .- x))
+    fable(x) = maximum(A * (x)) < 1 && maximum(abs.(x)) < 1 
 
     for iters in 1 : 10000
         val = f(x)
@@ -24,11 +25,7 @@ function test()
 
         t = 1
 
-        while maximum(A * (x + t * v)) ≥ 1 || maximum(abs.(x + t * v)) ≥ 1
-            t *= β
-        end
-
-        while f(x + t * v) > val + α * t * fprime
+        while !fable(x + t * v) || f(x + t * v) > val + α * t * fprime
             t *= β
         end
 
