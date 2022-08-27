@@ -38,14 +38,16 @@ function test()
         d = 1 ./ (1 .- A * x)
         ∇f = A'd - 1 ./ (1 .+ x) + 1 ./ (1 .- x) 
         ∇²f = A'Diagonal(d .^ 2)A + Diagonal(1 ./ (1 .+ x) .^ 2 + 1 ./ (1 .- x) .^ 2)
-        Δx = Δxₙₜ(∇f, ∇²f) 
+        Δx = Δxₙₜ(∇f, ∇²f)
+        Ax = A * x
+        AΔx = A * Δx
 
         function f̃(t)
             z = x + t * Δx 
-            Ax = A * z
+            Z = Ax + t * AΔx
 
             if maximum(abs.(z)) < 1
-                return maximum(Ax) < 1 ? -sum(log.(1 .- Ax)) - sum(log.(1 .+ z)) - sum(log.(1 .- z)) : Inf
+                return maximum(Z) < 1 ? -sum(log.(1 .- Z)) - sum(log.(1 .+ z)) - sum(log.(1 .- z)) : Inf
             end
 
             Inf
