@@ -12,15 +12,15 @@ function backtrack(f, f′, x, Δx, α = 0.01, β = 0.5)
     t
 end
 
-function newton(f, ∇f, ∇²f, x₀)
+function newton(f, ∇f, ∇²f, x₀, maxiters = 1000, ε = 1e-8)
     x = x₀
 
-    for iters in 1 : 10000
+    for iters in 1 : maxiters
         g = ∇f(x);
         Δx = -(∇²f(x) \ g)
         f′ = g'Δx
 
-        if abs(f′) < 1e-8
+        if abs(f′) < ε
             break
         end
 
