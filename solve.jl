@@ -47,7 +47,7 @@ function test()
             z = x + t * Δx 
             Z = Ax + t * AΔx
 
-            maximum(abs.(z)) < 1 && maximum(Z) < maximum(Z) < 1 ? -sum(log.(1 .- Z)) - sum(log.(1 .+ z)) - sum(log.(1 .- z)) : Inf
+            maximum(abs.(z)) < 1 && maximum(Z) < 1 ? -sum(log.(1 .- Z)) - sum(log.(1 .+ z)) - sum(log.(1 .- z)) : Inf
         end    
 
         f̃, ∇f, Δx
